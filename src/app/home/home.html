@@ -1,0 +1,45 @@
+<div class="camp-form-wrapper">
+  <div class="camp-form-container">
+      <h2>CampDay 露營日</h2>
+
+    <!-- 上方：使用說明 -->
+    <div class="form-instructions">
+<h3>使用說明</h3>
+<p>本服務提供方便的露營查詢功能。使用者可依照以下步驟操作：</p>
+<ol>
+  <li>選擇您想露營的日期。</li>
+  <li>選擇縣市以篩選露營地點。</li>
+  <li>點擊「搜尋」按鈕，系統將列出符合條件的露營地點資訊。</li>
+  <li>每個露營地點同時提供當日及未來天氣預報，方便規劃行程。</li>
+</ol>
+<p>所有欄位皆為必填，未填寫將提示錯誤訊息。</p>
+    </div>
+
+    <!-- 下方：表單 -->
+    <form [formGroup]="campForm" (ngSubmit)="submitForm()" class="camp-form">
+      <!-- 日期 -->
+      <div class="form-item">
+        <label for="campDate">露營日</label>
+        <input type="date" id="campDate" formControlName="campDate">
+        <div *ngIf="campForm.get('campDate')?.invalid && campForm.get('campDate')?.touched" class="error">
+          請選擇日期
+        </div>
+      </div>
+
+      <!-- 縣市 -->
+      <div class="form-item">
+        <label for="city">縣市</label>
+        <select id="city" formControlName="city">
+          <option value="">請選擇縣市</option>
+          <option *ngFor="let c of cities" [value]="c">{{ c }}</option>
+        </select>
+        <div *ngIf="campForm.get('city')?.invalid && campForm.get('city')?.touched" class="error">
+          請選擇縣市
+        </div>
+      </div>
+
+      <button type="submit" class="submit-btn">搜尋</button>
+    </form>
+
+  </div>
+</div>

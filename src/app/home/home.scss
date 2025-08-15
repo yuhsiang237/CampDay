@@ -1,0 +1,101 @@
+.camp-form-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: #f9f9f9;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  padding-bottom: 25px;
+  padding-top: 25px;
+
+}
+.camp-form-container {
+  background: #ffffff;
+  padding: 40px 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  max-width: 500px;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  gap: 30px; /* 上下間距 */
+}
+
+/* 使用說明 */
+.form-instructions {
+  background-color: #f0f4f8;
+  padding: 20px;
+  border-radius: 8px;
+  color: #333;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.form-instructions h3 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+/* 表單樣式 */
+.camp-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.camp-form h2 {
+  margin-top: 0;
+  text-align: center;
+  font-weight: 600;
+  color: #333;
+}
+
+.form-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-item label {
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: #555;
+}
+
+.form-item input,
+.form-item select {
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  transition: border 0.2s;
+}
+
+.form-item input:focus,
+.form-item select:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.error {
+  margin-top: 4px;
+  color: #e74c3c;
+  font-size: 12px;
+}
+
+.submit-btn {
+  padding: 12px 0;
+  border: none;
+  border-radius: 6px;
+  background-color: #007bff;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.submit-btn:hover {
+  background-color: #0056b3;
+}
+
