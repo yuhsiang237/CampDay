@@ -24,7 +24,7 @@ import { CampSite } from './../../interfaces/CampSite';
 })
 export class Home implements OnInit {
   // 表單
-  campForm!: FormGroup;
+  campForm!: FormGroup; // 我保證這個變數在使用前會被賦值，請 TypeScript 不要再抱怨它可能是 undefined。
 
   // 下拉選單與資料
   dates: string[] = [];
