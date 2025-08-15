@@ -4,12 +4,10 @@ import { ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
-  
-  imports: [RouterOutlet,
-    ReactiveFormsModule,
-  ],
+
+  imports: [RouterOutlet, ReactiveFormsModule],
   templateUrl: './app.html',
-  styleUrl: './app.scss'
+  styleUrl: './app.scss',
 })
 export class App {
   protected readonly title = signal('camp-day');

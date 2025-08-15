@@ -6,4 +6,3 @@ export const routes: Routes = [
   { path: '', component: Home },
   { path: 'result', component: Result },
 ];
-
