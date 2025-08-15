@@ -5,11 +5,15 @@ import {
   Validators,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { CommonModule } from '@angular/common'; // <-- 匯入 CommonModule
-import Papa from 'papaparse';
+import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { CampSite } from './../../interfaces/CampSite'; // 假設你把 interface 放這
 import { Router } from '@angular/router';
+
+// 第三方套件
+import Papa from 'papaparse';
+
+// 介面
+import { CampSite } from './../../interfaces/CampSite';
 
 @Component({
   selector: 'app-home',
@@ -19,10 +23,13 @@ import { Router } from '@angular/router';
   styleUrls: ['./home.scss'],
 })
 export class Home implements OnInit {
+  // 表單
   campForm!: FormGroup;
-  dates: string[] = []; // 下拉選單日期
-  campSites: CampSite[] = []; // 存放 CSV 轉成的 JSON
-  cities: any[] = []; // 存放 CSV 轉成的 JSON
+
+  // 下拉選單與資料
+  dates: string[] = [];
+  cities: string[] = [];
+  campSites: CampSite[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -31,30 +38,41 @@ export class Home implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // 產生未來 7 天日期字串
+    this.generateNext7Days();
+    this.buildForm();
+    this.loadCampData();
+  }
+
+  /** 建立表單 */
+  private buildForm(): void {
+    this.campForm = this.fb.group({
+      campDate: ['', Validators.required],
+      city: ['', Validators.required],
+    });
+  }
+
+  /** 產生未來 7 天日期字串 */
+  private generateNext7Days(): void {
     const today = new Date();
     for (let i = 0; i < 7; i++) {
       const date = new Date(today);
       date.setDate(today.getDate() + i);
-      this.dates.push(date.toISOString().split('T')[0]); // 格式 YYYY-MM-DD
+      this.dates.push(date.toISOString().split('T')[0]); // YYYY-MM-DD
     }
+  }
 
-    // 建立表單
-    this.campForm = this.fb.group({
-      campDate: ['', Validators.required],
-      city: ['', Validators.required], // 新增 city 欄位
-    });
-
-    // 使用 HttpClient 讀取 CSV
+  /** 讀取 CSV 並轉成 CampSite[] */
+  private loadCampData(): void {
     this.http
       .get('assets/campdata.csv', { responseType: 'text' })
       .subscribe((csvData) => {
-        // 使用 mapping function 將 CSV 轉成 CampSite[]
         this.campSites = this.mapCsvToCampSites(csvData);
 
+        // 取得唯一縣市
         this.cities = Array.from(
           new Set(this.campSites.map((site) => site.city)),
         );
+
         console.log('縣市選單:', this.cities);
         console.log('Mapped CampSites:', this.campSites);
       });
@@ -65,7 +83,7 @@ export class Home implements OnInit {
    * @param csvData CSV 原始文字
    * @returns CampSite[]
    */
-  mapCsvToCampSites(csvData: string): CampSite[] {
+  private mapCsvToCampSites(csvData: string): CampSite[] {
     const parsed = Papa.parse(csvData, { header: true, skipEmptyLines: true });
 
     return parsed.data.map((row: any) => ({
@@ -86,9 +104,11 @@ export class Home implements OnInit {
       establishedTime: row['露營場設置時間'] || undefined,
     }));
   }
-  submitForm() {
+
+  /** 表單送出 */
+  submitForm(): void {
     if (this.campForm.valid) {
-      // 可將表單資料帶到結果頁
+      // 導向結果頁，並帶入表單資料
       this.router.navigate(['/result'], {
         state: { formData: this.campForm.value },
       });
