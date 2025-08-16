@@ -10,6 +10,8 @@ import { CampSite } from './../../interfaces/CampSite';
 import { CampSearch } from './../../interfaces/CampSearch';
 import { CampDistData } from '../../interfaces/CampDistData';
 
+import { environment } from '../../environments/environment';
+
 @Component({
   selector: 'app-result',
   imports: [CommonModule, HttpClientModule],
@@ -22,6 +24,8 @@ export class Result {
   campSites: CampSite[] = [];
   campSiteSearchResults: CampSite[] = [];
   campDistData: CampDistData[] = [];
+  weather: any;
+  private apiUrl = `https://opendata.cwa.gov.tw/api/v1/rest/datastore/F-D0047-007?Authorization=${environment.CWA_API_KEY}`;
 
   constructor(private router: Router, private http: HttpClient) {
     const navigation = this.router.getCurrentNavigation();
@@ -30,6 +34,8 @@ export class Result {
   }
 
   async ngOnInit(): Promise<void> {
+    await this.loadWeather();
+
     await this.loadCampData();
     console.log('全部 CampSites:', this.campSites);
 
@@ -101,5 +107,15 @@ export class Result {
       .sort((a, b) => a.district.localeCompare(b.district));
 
     return grouped;
+  }
+
+  async loadWeather() {
+    try {
+      // firstValueFrom 將 Observable 轉成 Promise
+      this.weather = await firstValueFrom(this.http.get(this.apiUrl));
+      console.log(this.weather);
+    } catch (err) {
+      console.error('取得天氣資料失敗', err);
+    }
   }
 }
