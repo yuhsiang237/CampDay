@@ -15,7 +15,8 @@
     table-layout: fixed; // 固定欄位寬度
     margin-bottom: 2rem;
 
-    th, td {
+    th,
+    td {
       border: 1px solid #ddd;
       padding: 0.5rem 0.8rem;
       text-align: left;
@@ -39,12 +40,24 @@
     }
 
     // 固定每個欄位寬度
-    .col-name { width: 200px; }
-    .col-city { width: 100px; }
-    .col-address { width: 250px; }
-    .col-phone { width: 120px; }
-    .col-status { width: 120px; }
-    .col-website { width: 80px; }
+    .col-name {
+      width: 200px;
+    }
+    .col-city {
+      width: 100px;
+    }
+    .col-address {
+      width: 250px;
+    }
+    .col-phone {
+      width: 120px;
+    }
+    .col-status {
+      width: 120px;
+    }
+    .col-website {
+      width: 80px;
+    }
 
     .address .text {
       cursor: pointer;
@@ -71,8 +84,8 @@
   gap: 2rem;
   padding: 1rem;
   background-color: #fdfdfd; // 乾淨白底
-  border: 1px solid #ddd;     // 與表格統一邊框
-  border-radius: 6px;         
+  border: 1px solid #ddd; // 與表格統一邊框
+  border-radius: 6px;
 
   .field {
     display: flex;
@@ -80,14 +93,14 @@
 
     .label {
       font-size: 0.8rem;
-      color: #666;             // 次要文字色
+      color: #666; // 次要文字色
       margin-bottom: 0.2rem;
     }
 
     .value {
       font-size: 1rem;
       font-weight: 500;
-      color: #222;             // 主要文字色
+      color: #222; // 主要文字色
     }
   }
 }

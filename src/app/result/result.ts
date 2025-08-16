@@ -27,7 +27,10 @@ export class Result {
   weather: any;
   private apiUrl = `https://opendata.cwa.gov.tw/api/v1/rest/datastore/F-D0047-007?Authorization=${environment.CWA_API_KEY}`;
 
-  constructor(private router: Router, private http: HttpClient) {
+  constructor(
+    private router: Router,
+    private http: HttpClient,
+  ) {
     const navigation = this.router.getCurrentNavigation();
     this.formData = navigation?.extras.state?.['formData'];
     this.campSearch = this.toCampSiteSearchResults(this.formData);
@@ -47,14 +50,14 @@ export class Result {
   /** 過濾符合縣市的露營場 */
   private filterCampSites(): CampSite[] {
     return this.campSites.filter(
-      site => site.city.trim() === this.campSearch.city.trim()
+      (site) => site.city.trim() === this.campSearch.city.trim(),
     );
   }
 
   /** 載入 CSV 並解析成 CampSite[] */
   private async loadCampData(): Promise<void> {
     const csvData = await firstValueFrom(
-      this.http.get('assets/campdata.csv', { responseType: 'text' })
+      this.http.get('assets/campdata.csv', { responseType: 'text' }),
     );
     this.campSites = this.mapCsvToCampSites(csvData);
     console.log('Mapped CampSites:', this.campSites);
@@ -76,8 +79,7 @@ export class Result {
       phone: row['電話'] || undefined,
       mobile: row['手機'] || undefined,
       website: row['網站'] || undefined,
-      complianceOrViolation:
-        row['符合相關法規露營場／違反相關法規露營場'],
+      complianceOrViolation: row['符合相關法規露營場／違反相關法規露營場'],
       violationType: row['違反相關法規'],
       indigenousArea: row['是否有在原民區'],
       establishedTime: row['露營場設置時間'] || undefined,
@@ -96,14 +98,14 @@ export class Result {
   private groupByDistrict(sites: CampSite[]): CampDistData[] {
     const map: Record<string, CampSite[]> = {};
 
-    sites.forEach(site => {
+    sites.forEach((site) => {
       const key = site.district || '未分類';
       if (!map[key]) map[key] = [];
       map[key].push(site);
     });
 
     const grouped: CampDistData[] = Object.keys(map)
-      .map(key => ({ district: key, data: map[key] }))
+      .map((key) => ({ district: key, data: map[key] }))
       .sort((a, b) => a.district.localeCompare(b.district));
 
     return grouped;
