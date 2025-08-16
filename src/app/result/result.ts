@@ -18,7 +18,6 @@ import { environment } from '../../environments/environment';
 import weatherAPI from './../../../public/assets/weatherAPI.json';
 
 @Component({
-
   selector: 'app-result',
   imports: [CommonModule, HttpClientModule, LoadingOverlay],
   templateUrl: './result.html',
@@ -33,7 +32,7 @@ export class Result {
   weather: any;
   cityApiMap: WeatherAPI = weatherAPI as WeatherAPI;
   locationWeather: any[] = [];
-  isLoading:boolean = true;
+  isLoading: boolean = true;
 
   constructor(
     private router: Router,
@@ -109,7 +108,7 @@ export class Result {
     this.campSiteSearchResults = this.filterCampSites();
     this.campDistData = this.groupByDistrict(this.campSiteSearchResults);
     console.log('過濾後結果:', this.campDistData);
-    this.isLoading = false
+    this.isLoading = false;
   }
 
   /** 過濾符合縣市的露營場 */
