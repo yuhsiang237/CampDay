@@ -4,10 +4,11 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build --base-href /CampDay/",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "format": "prettier --write \"src/**/*.{ts,html,scss,css,json,md}\""
+    "format": "prettier --write \"src/**/*.{ts,html,scss,css,json,md}\"",
+    "deploy": "npx ngh --dir=dist/camp-day/browser"
   },
   "prettier": {
     "overrides": [
@@ -39,6 +40,7 @@
     "@angular/compiler-cli": "^20.1.0",
     "@types/jasmine": "~5.1.0",
     "@types/papaparse": "^5.3.16",
+    "angular-cli-ghpages": "^2.0.3",
     "jasmine-core": "~5.8.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
