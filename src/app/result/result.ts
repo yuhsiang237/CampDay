@@ -63,7 +63,9 @@ export class Result {
       const newSlots: (any | null)[] = [null, null];
 
       slots.forEach((slot: any) => {
-        const [startStr, endStr] = slot.timeRange.split('~').map((s: string) => s.trim());
+        const [startStr, endStr] = slot.timeRange
+          .split('~')
+          .map((s: string) => s.trim());
         let startHour = parseInt(startStr.split(':')[0], 10);
         let endHour = parseInt(endStr.split(':')[0], 10);
 
@@ -76,11 +78,19 @@ export class Result {
 
         // 上午 slot
         if (midHour < 12) {
-          newSlots[0] = { ...slot, timeRange: '00:00 ~ 12:00', label: '凌晨~中午' };
+          newSlots[0] = {
+            ...slot,
+            timeRange: '00:00 ~ 12:00',
+            label: '凌晨~中午',
+          };
         }
         // 下午 slot
         else {
-          newSlots[1] = { ...slot, timeRange: '13:00 ~ 23:00', label: '下午~晚上' };
+          newSlots[1] = {
+            ...slot,
+            timeRange: '13:00 ~ 23:00',
+            label: '下午~晚上',
+          };
         }
       });
 
