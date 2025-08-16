@@ -21,7 +21,7 @@ export class Result {
   campSearch!: CampSearch;
   campSites: CampSite[] = [];
   campSiteSearchResults: CampSite[] = [];
-  campDistData: CampDistData[] = []; 
+  campDistData: CampDistData[] = [];
 
   constructor(private router: Router, private http: HttpClient) {
     const navigation = this.router.getCurrentNavigation();
@@ -31,21 +31,21 @@ export class Result {
 
   async ngOnInit(): Promise<void> {
     await this.loadCampData();
-    console.log('xxxxxx-->', this.campSites);
+    console.log('全部 CampSites:', this.campSites);
 
-    // 載入完資料後再過濾
     this.campSiteSearchResults = this.filterCampSites();
-    this.campDistData = this.groupByDistrict(this.campSiteSearchResults)
+    this.campDistData = this.groupByDistrict(this.campSiteSearchResults);
     console.log('過濾後結果:', this.campDistData);
   }
 
+  /** 過濾符合縣市的露營場 */
   private filterCampSites(): CampSite[] {
-    console.log('rrr', this.campSites);
     return this.campSites.filter(
-      (x) => x.city.trim() === this.campSearch.city.trim()
+      site => site.city.trim() === this.campSearch.city.trim()
     );
   }
 
+  /** 載入 CSV 並解析成 CampSite[] */
   private async loadCampData(): Promise<void> {
     const csvData = await firstValueFrom(
       this.http.get('assets/campdata.csv', { responseType: 'text' })
@@ -54,11 +54,7 @@ export class Result {
     console.log('Mapped CampSites:', this.campSites);
   }
 
-  /**
-   * 將 CSV 文字轉成 CampSite[]
-   * @param csvData CSV 原始文字
-   * @returns CampSite[]
-   */
+  /** 將 CSV 文字轉成 CampSite[] */
   private mapCsvToCampSites(csvData: string): CampSite[] {
     const parsed = Papa.parse(csvData, { header: true, skipEmptyLines: true });
 
@@ -82,6 +78,7 @@ export class Result {
     }));
   }
 
+  /** 轉換 formData 成 CampSearch */
   toCampSiteSearchResults(data: any): CampSearch {
     return {
       campDate: data?.campDate ?? '',
@@ -89,6 +86,7 @@ export class Result {
     };
   }
 
+  /** 依 district 分組 CampSite，回傳 CampDistData[] */
   private groupByDistrict(sites: CampSite[]): CampDistData[] {
     const map: Record<string, CampSite[]> = {};
 
@@ -98,14 +96,9 @@ export class Result {
       map[key].push(site);
     });
 
-    // 轉成陣列，方便 *ngFor
-    const grouped: CampDistData[] = Object.keys(map).map(key => ({
-      district: key,
-      data: map[key],
-    }));
-
-    // 可選：依 district 排序
-    grouped.sort((a, b) => a.district.localeCompare(b.district));
+    const grouped: CampDistData[] = Object.keys(map)
+      .map(key => ({ district: key, data: map[key] }))
+      .sort((a, b) => a.district.localeCompare(b.district));
 
     return grouped;
   }
