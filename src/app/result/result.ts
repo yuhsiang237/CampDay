@@ -188,6 +188,9 @@ export class Result {
     const firstKey = Object.keys(grouped)[0];
     return firstKey ? grouped[firstKey] : [];
   }
+  encodeURL(value: string): string {
+    return encodeURIComponent(value);
+  }
   getWeatherByDistrictGrouped(districtName: string): { [date: string]: any[] } {
     const districtData = this.locationWeather?.find(
       (item: any) => item.LocationName === districtName,

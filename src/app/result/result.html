@@ -84,7 +84,17 @@
                 class="btn-link"
                 >前往</a
               >
-              <span *ngIf="!site.website">-</span>
+              <span *ngIf="!site.website">
+                <a
+                  [href]="
+                    'https://www.google.com/search?q=' + encodeURL(site.name)
+                  "
+                  target="_blank"
+                  class="btn-link"
+                >
+                  前往
+                </a>
+              </span>
             </td>
           </tr>
         </tbody>

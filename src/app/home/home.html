@@ -3,16 +3,15 @@
     <h2>CampDay 露營日</h2>
 
     <!-- 上方：使用說明 -->
-    <div class="form-instructions">
-      <h3>使用說明</h3>
+    <div class="form-description">
       <p>本服務提供方便的露營查詢功能。使用者可依照以下步驟操作：</p>
       <ol>
-        <li>選擇您想露營的日期。</li>
+        <li>選擇您想露營的日期（限制:未來 7 天）。</li>
         <li>選擇縣市以篩選露營地點。</li>
         <li>點擊「搜尋」按鈕，系統將列出符合條件的露營地點資訊。</li>
         <li>每個露營地點同時提供當日及未來天氣預報，方便規劃行程。</li>
+        <li>所有欄位皆為必填，未填寫將提示錯誤訊息。</li>
       </ol>
-      <p>所有欄位皆為必填，未填寫將提示錯誤訊息。</p>
     </div>
 
     <!-- 下方：表單 -->
@@ -20,7 +19,12 @@
       <!-- 日期 -->
       <div class="form-item">
         <label for="campDate">露營日</label>
-        <input type="date" id="campDate" formControlName="campDate" />
+        <input
+          type="date"
+          formControlName="campDate"
+          [min]="dates[0]"
+          [max]="dates[dates.length - 1]"
+        />
         <div
           *ngIf="
             campForm.get('campDate')?.invalid &&
