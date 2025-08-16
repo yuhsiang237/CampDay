@@ -51,14 +51,17 @@
                 let kv of getWeatherByDistrictGrouped(group.district) | keyvalue
               "
             >
-              <ng-container *ngIf="kv.value[i]">
+              <ng-container *ngIf="kv.value[i] && kv.value[i].maxTemp !== '-'; else noData">
                 <div>{{ kv.value[i].timeRange }}</div>
                 <div>
                   {{ kv.value[i].maxTemp }}°C ~ {{ kv.value[i].minTemp }}°C
                 </div>
                 <div>{{ kv.value[i].weather }}</div>
               </ng-container>
-              <ng-container *ngIf="!kv.value[i]">-</ng-container>
+              
+              <ng-template #noData>
+                <div class="no-data">無資料</div>
+              </ng-template>
             </td>
           </tr>
         </tbody>
