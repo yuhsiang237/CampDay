@@ -45,14 +45,17 @@
               let i = index
             "
           >
-            <td>{{ i === 0 ? "上午" : "下午" }}</td>
+            <td>
+              {{ i === 0 ? "上午" : "下午" }}<br/>
+  {{ i === 0 ? "(00:00 ~ 12:00)" : "(13:00 ~ 23:00)" }}     
+            </td>
             <td
               *ngFor="
                 let kv of getWeatherByDistrictGrouped(group.district) | keyvalue
               "
             >
               <ng-container *ngIf="kv.value[i] && kv.value[i].maxTemp !== '-'; else noData">
-                <div>{{ kv.value[i].timeRange }}</div>
+                <!-- <div>{{ kv.value[i].timeRange }}</div> -->
                 <div>
                   {{ kv.value[i].maxTemp }}°C ~ {{ kv.value[i].minTemp }}°C
                 </div>
