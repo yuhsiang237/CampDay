@@ -97,3 +97,18 @@
 .submit-btn:hover {
   background-color: #0056b3;
 }
+
+
+/* 手機版調整左右 margin */
+@media (max-width: 600px) {
+  .camp-form-container {
+    padding-left: 20px;
+    padding-right: 20px;
+    width: auto; /* 避免 90% 寬度過滿 */
+  }
+
+  .camp-form-wrapper {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+}
