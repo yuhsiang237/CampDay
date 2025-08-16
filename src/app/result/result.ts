@@ -9,8 +9,11 @@ import { firstValueFrom } from 'rxjs';
 import { CampSite } from './../../interfaces/CampSite';
 import { CampSearch } from './../../interfaces/CampSearch';
 import { CampDistData } from '../../interfaces/CampDistData';
+import { WeatherAPI } from '../../interfaces/WeatherAPI';
 
 import { environment } from '../../environments/environment';
+
+import weatherAPI from './../../../public/assets/weatherAPI.json';
 
 @Component({
   selector: 'app-result',
@@ -25,7 +28,8 @@ export class Result {
   campSiteSearchResults: CampSite[] = [];
   campDistData: CampDistData[] = [];
   weather: any;
-  private apiUrl = `https://opendata.cwa.gov.tw/api/v1/rest/datastore/F-D0047-007?Authorization=${environment.CWA_API_KEY}`;
+  cityApiMap: WeatherAPI = weatherAPI as WeatherAPI;
+  locationWeather: any[] = [];
 
   constructor(
     private router: Router,
@@ -35,11 +39,19 @@ export class Result {
     this.formData = navigation?.extras.state?.['formData'];
     this.campSearch = this.toCampSiteSearchResults(this.formData);
   }
-
+  getMaxSlots(data: Record<string, any[]>): number {
+    let max = 0;
+    for (const key in data) {
+      if (data[key].length > max) max = data[key].length;
+    }
+    return max;
+  }
   async ngOnInit(): Promise<void> {
     await this.loadWeather();
-
     await this.loadCampData();
+
+    console.log('士林區:', this.getWeatherByDistrictGrouped('士林區'));
+
     console.log('全部 CampSites:', this.campSites);
 
     this.campSiteSearchResults = this.filterCampSites();
@@ -111,13 +123,75 @@ export class Result {
     return grouped;
   }
 
-  async loadWeather() {
+  getApiByCity(city: string): string | undefined {
+    return this.cityApiMap[city]?.api;
+  }
+  async loadWeather(): Promise<void> {
     try {
+      const apiUrl = `https://opendata.cwa.gov.tw/api/${this.getApiByCity(this.campSearch.city)}?Authorization=${environment.CWA_API_KEY}`;
       // firstValueFrom 將 Observable 轉成 Promise
-      this.weather = await firstValueFrom(this.http.get(this.apiUrl));
-      console.log(this.weather);
+      this.weather = await firstValueFrom(this.http.get(apiUrl));
+      this.locationWeather = this.weather.records.Locations[0].Location;
+      console.log('取得天氣資料:', this.locationWeather);
     } catch (err) {
       console.error('取得天氣資料失敗', err);
     }
+  }
+
+  // helper function 回傳第一個日期的時間段，用於表頭
+  getFirstDaySlots(districtName: string): any[] {
+    const grouped: any = this.getWeatherByDistrictGrouped(districtName);
+    const firstKey = Object.keys(grouped)[0];
+    return firstKey ? grouped[firstKey] : [];
+  }
+  getWeatherByDistrictGrouped(districtName: string): { [date: string]: any[] } {
+    const districtData = this.locationWeather?.find(
+      (item: any) => item.LocationName === districtName,
+    );
+    if (!districtData) return {};
+
+    const grouped: { [date: string]: any[] } = {};
+    const elements: any = {};
+    districtData.WeatherElement.forEach(
+      (el: any) => (elements[el.ElementName] = el.Time),
+    );
+
+    const maxTemps = elements['最高溫度'];
+    const minTemps = elements['最低溫度'];
+    const weatherStates = elements['天氣現象'];
+
+    maxTemps.forEach((slot: any, idx: number) => {
+      const start = new Date(slot.StartTime);
+      const end = new Date(slot.EndTime);
+      const dateStr = start.toISOString().slice(5, 10).replace('-', '/');
+
+      if (!grouped[dateStr]) grouped[dateStr] = [];
+
+      grouped[dateStr].push({
+        label: start.getDate() !== end.getDate() ? '夜間' : '',
+        timeRange: `${start.getHours().toString().padStart(2, '0')}:${start.getMinutes().toString().padStart(2, '0')} ~ ${end.getHours().toString().padStart(2, '0')}:${end.getMinutes().toString().padStart(2, '0')}`,
+        maxTemp: slot.ElementValue[0].MaxTemperature,
+        minTemp: minTemps[idx].ElementValue[0].MinTemperature,
+        weather: weatherStates[idx].ElementValue[0].Weather,
+      });
+    });
+
+    return grouped;
+  }
+
+  getWeatherByLocationAny(location: string) {
+    const locationData = this.locationWeather?.find(
+      (item) => item.LocationName === location,
+    );
+    if (!locationData) return null;
+
+    const result: any = {};
+
+    locationData.WeatherElement.forEach((element: any) => {
+      // 直接把整個 Time 陣列存進結果
+      result[element.ElementName] = element.Time;
+    });
+
+    return result;
   }
 }

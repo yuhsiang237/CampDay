@@ -104,3 +104,26 @@
     }
   }
 }
+
+///
+/// 天氣資訊樣式
+.weather-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+}
+
+.weather-table th,
+.weather-table td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: center;
+}
+
+.weather-table th {
+  background-color: #f2f2f2;
+}
+
+.weather-table tbody tr:nth-child(even) {
+  background-color: #fafafa;
+}
