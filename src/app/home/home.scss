@@ -10,7 +10,7 @@
 }
 .camp-form-container {
   background: #ffffff;
-  padding: 10px 30px 30px 30px;
+  padding: 10px 30px 10px 30px;
   border-radius: 12px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   max-width: 500px;
@@ -112,3 +112,26 @@
     padding-right: 15px;
   }
 }
+.author-info {
+  text-align: right; // ✅ 靠右對齊
+  font-size: 0.85rem;
+  color: #888;
+
+  a {
+    color: #007bff;
+    text-decoration: none; // 移除底線
+    display: inline-flex;
+    align-items: center;
+
+    svg {
+      fill: currentColor; // icon 跟文字同色
+      margin-right: 4px;
+    }
+
+    &:hover {
+      text-decoration: none;
+      opacity: 0.8; // 小小互動效果
+    }
+  }
+}
+
