@@ -1,5 +1,7 @@
 
-<div style="padding: 20px">
+<app-loading-overlay [isLoading]="isLoading" message="載入中…"></app-loading-overlay>
+
+<div  *ngIf="!isLoading"  style="padding: 20px">
 
   <div class="camp-search-card" *ngIf="campSearch">
 
