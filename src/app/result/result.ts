@@ -46,6 +46,50 @@ export class Result {
     }
     return max;
   }
+
+  normalizeWeatherSlots(raw: any): any {
+    const normalized: any = {};
+
+    Object.keys(raw).forEach((date) => {
+      const slots = raw[date];
+      // 預設兩個時間段
+      const newSlots = [
+        {
+          label: '凌晨~中午',
+          timeRange: '00:00 ~ 12:00',
+          maxTemp: '-',
+          minTemp: '-',
+          weather: '-',
+        },
+        {
+          label: '下午~晚上',
+          timeRange: '13:00 ~ 23:00',
+          maxTemp: '-',
+          minTemp: '-',
+          weather: '-',
+        },
+      ];
+
+      slots.forEach((slot: any) => {
+        const [startStr, endStr] = slot.timeRange.split(' ~ ');
+        const startHour = parseInt(startStr.split(':')[0]);
+        const endHour = parseInt(endStr.split(':')[0]);
+
+        // 0~12 對應第一格
+        if (startHour < 12 || endHour <= 12) {
+          newSlots[0] = { ...slot, timeRange: '00:00 ~ 12:00' };
+        }
+        // 13~23 對應第二格
+        if (startHour >= 12 || endHour > 12) {
+          newSlots[1] = { ...slot, timeRange: '13:00 ~ 23:00' };
+        }
+      });
+
+      normalized[date] = newSlots;
+    });
+
+    return normalized;
+  }
   async ngOnInit(): Promise<void> {
     await this.loadWeather();
     await this.loadCampData();
@@ -176,7 +220,7 @@ export class Result {
       });
     });
 
-    return grouped;
+    return this.normalizeWeatherSlots(grouped);
   }
 
   getWeatherByLocationAny(location: string) {

@@ -13,13 +13,15 @@
   <div class="camp-list">
     <div *ngFor="let group of campDistData">
       <h2 class="district-title">{{ group.district }}</h2>
+      <h3 class="camp-title">露營天氣情況</h3>
+
       <table border="1" cellpadding="5">
         <thead>
           <tr>
             <th>時間 / 日期</th>
             <th
               *ngFor="
-                let kv of getWeatherByDistrictGrouped('士林區') | keyvalue
+                let kv of getWeatherByDistrictGrouped(group.district) | keyvalue
               "
             >
               {{ kv.key }}
@@ -30,15 +32,15 @@
           <tr
             *ngFor="
               let idx of [].constructor(
-                getMaxSlots(getWeatherByDistrictGrouped('士林區'))
+                getMaxSlots(getWeatherByDistrictGrouped(group.district))
               );
               let i = index
             "
           >
-            <td>時間段 {{ i + 1 }}</td>
+            <td>{{ i === 0 ? "上午" : "下午" }}</td>
             <td
               *ngFor="
-                let kv of getWeatherByDistrictGrouped('士林區') | keyvalue
+                let kv of getWeatherByDistrictGrouped(group.district) | keyvalue
               "
             >
               <ng-container *ngIf="kv.value[i]">
@@ -53,7 +55,7 @@
           </tr>
         </tbody>
       </table>
-
+      <h3 class="camp-title">露營場列表</h3>
       <table class="camp-table">
         <thead>
           <tr>
