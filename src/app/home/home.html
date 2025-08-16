@@ -44,14 +44,13 @@
           [min]="dates[0]"
           [max]="dates[dates.length - 1]"
         />
-        <div
-          *ngIf="
-            campForm.get('campDate')?.invalid &&
-            campForm.get('campDate')?.touched
-          "
-          class="error"
-        >
-          請選擇日期
+        <div *ngIf="campForm.get('campDate')?.touched && campForm.get('campDate')?.invalid" class="error">
+          <ng-container *ngIf="campForm.get('campDate')?.errors?.['required']">
+            請選擇日期
+          </ng-container>
+          <ng-container *ngIf="campForm.get('campDate')?.errors?.['max7Days']">
+            露營日不支援超過未來 7 天
+          </ng-container>
         </div>
       </div>
 

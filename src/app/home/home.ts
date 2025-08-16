@@ -8,6 +8,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { AbstractControl } from '@angular/forms';
 
 // 第三方套件
 import Papa from 'papaparse';
@@ -46,7 +47,22 @@ export class Home implements OnInit {
   /** 建立表單 */
   private buildForm(): void {
     this.campForm = this.fb.group({
-      campDate: ['', Validators.required],
+      campDate: [
+        '',
+        [
+          Validators.required,
+          (control: AbstractControl) => {
+            if (!control.value) return null;
+            const selected = new Date(control.value);
+            const today = new Date();
+            const maxDate = new Date();
+            maxDate.setDate(today.getDate() + 6); // 今日 + 6 天
+            return selected < today || selected > maxDate
+              ? { max7Days: true }
+              : null;
+          },
+        ],
+      ],
       city: ['', Validators.required],
     });
   }
