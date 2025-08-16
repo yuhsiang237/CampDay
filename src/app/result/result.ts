@@ -4,6 +4,7 @@ import Papa from 'papaparse';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { firstValueFrom } from 'rxjs';
+import { Location } from '@angular/common';
 
 // 介面
 import { CampSite } from './../../interfaces/CampSite';
@@ -34,10 +35,14 @@ export class Result {
   constructor(
     private router: Router,
     private http: HttpClient,
+    private location: Location,
   ) {
     const navigation = this.router.getCurrentNavigation();
     this.formData = navigation?.extras.state?.['formData'];
     this.campSearch = this.toCampSiteSearchResults(this.formData);
+  }
+  goBack(): void {
+    this.location.back();
   }
   getMaxSlots(data: Record<string, any[]>): number {
     let max = 0;

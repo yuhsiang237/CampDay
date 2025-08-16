@@ -153,3 +153,19 @@
     }
   }
 }
+
+// button樣式
+.btn-back {
+  padding: 12px ;
+  border: none;
+  border-radius: 6px;
+  background-color: #6c757d; // 灰色
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-back:hover {
+  background-color: #5a6268; // 深一點的灰色
+}

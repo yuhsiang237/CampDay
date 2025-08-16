@@ -1,5 +1,12 @@
+
 <div style="padding: 50px">
+
   <div class="camp-search-card" *ngIf="campSearch">
+
+      
+<div class="field">
+      <button (click)="goBack()" class="btn-back">返回上一頁</button>
+</div>
     <div class="field">
       <span class="label">露營日</span>
       <span class="value">{{ campSearch.campDate || "-" }}</span>
@@ -8,6 +15,7 @@
       <span class="label">縣市</span>
       <span class="value">{{ campSearch.city || "-" }}</span>
     </div>
+
   </div>
 
   <div class="camp-list">
