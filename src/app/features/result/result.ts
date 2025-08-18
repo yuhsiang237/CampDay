@@ -7,6 +7,7 @@ import { firstValueFrom } from 'rxjs';
 import { Location } from '@angular/common';
 import { LoadingOverlay } from './../../shared/components/loading-overlay/loading-overlay';
 import { CampSearchCard } from './../../shared/components/camp-search-card/camp-search-card';
+import { CampWeatherComponent } from './../../shared/components/camp-weather-component/camp-weather-component';
 
 // 介面
 import { CampSite } from './../../core/interfaces/CampSite';
@@ -21,7 +22,13 @@ import weatherAPI from './../../../../public/assets/weatherAPI.json';
 @Component({
   standalone: true,
   selector: 'app-result',
-  imports: [CommonModule, HttpClientModule, CampSearchCard, LoadingOverlay],
+  imports: [
+    CommonModule,
+    HttpClientModule,
+    CampSearchCard,
+    LoadingOverlay,
+    CampWeatherComponent,
+  ],
   templateUrl: './result.html',
   styleUrl: './result.scss',
 })

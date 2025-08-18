@@ -1,0 +1,55 @@
+/* camp-weather.component.scss */
+
+/* table 樣式 */
+table {
+  border: 0;
+  display: block;
+  width: 95vw;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  white-space: nowrap;
+  border-collapse: collapse;
+  table-layout: fixed;
+  margin-bottom: 2rem;
+}
+
+th,
+td {
+  border: 1px solid #ccc;
+  padding: 8px 12px;
+  text-align: left;
+  vertical-align: middle;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+thead th {
+  background-color: #f0f0f0;
+  font-weight: bold;
+  color: #555;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+tbody tr:hover {
+  background-color: #f0f8ff;
+}
+
+/* 標題樣式 */
+.camp-title {
+  font-size: 1.2rem;
+  margin: 15px 0 5px 0;
+  color: #555;
+}
+
+/* 手機版調整 */
+@media (max-width: 600px) {
+  table {
+    width: 95vw;
+    min-width: 300px;
+  }
+}

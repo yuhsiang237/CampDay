@@ -1,0 +1,31 @@
+<!-- camp-weather.component.html -->
+<h3 class="camp-title">露營天氣情況</h3>
+<table border="1" cellpadding="5">
+  <thead>
+    <tr>
+      <th>時間 / 日期</th>
+      <th *ngFor="let kv of weatherGrouped | keyvalue">{{ kv.key }}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let i of [].constructor(getMaxSlots()); let idx = index">
+      <td>
+        {{ idx === 0 ? "上午" : "下午" }}<br />
+        {{ idx === 0 ? "(00:00 ~ 12:00)" : "(13:00 ~ 23:00)" }}
+      </td>
+      <td *ngFor="let kv of weatherGrouped | keyvalue">
+        <ng-container
+          *ngIf="kv.value[idx] && kv.value[idx].maxTemp !== '-'; else noData"
+        >
+          <div>
+            {{ kv.value[idx].maxTemp }}°C ~ {{ kv.value[idx].minTemp }}°C
+          </div>
+          <div>{{ kv.value[idx].weather }}</div>
+        </ng-container>
+        <ng-template #noData>
+          <div class="no-data">無資料</div>
+        </ng-template>
+      </td>
+    </tr>
+  </tbody>
+</table>

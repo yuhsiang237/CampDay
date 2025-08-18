@@ -11,56 +11,10 @@
   <div class="camp-list">
     <div *ngFor="let group of campDistData">
       <h2 class="district-title">{{ group.district }}</h2>
-      <h3 class="camp-title">露營天氣情況</h3>
-
-      <table border="1" cellpadding="5">
-        <thead>
-          <tr>
-            <th>時間 / 日期</th>
-            <th
-              *ngFor="
-                let kv of getWeatherByDistrictGrouped(group.district) | keyvalue
-              "
-            >
-              {{ kv.key }}
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            *ngFor="
-              let idx of [].constructor(
-                getMaxSlots(getWeatherByDistrictGrouped(group.district))
-              );
-              let i = index
-            "
-          >
-            <td>
-              {{ i === 0 ? "上午" : "下午" }}<br />
-              {{ i === 0 ? "(00:00 ~ 12:00)" : "(13:00 ~ 23:00)" }}
-            </td>
-            <td
-              *ngFor="
-                let kv of getWeatherByDistrictGrouped(group.district) | keyvalue
-              "
-            >
-              <ng-container
-                *ngIf="kv.value[i] && kv.value[i].maxTemp !== '-'; else noData"
-              >
-                <!-- <div>{{ kv.value[i].timeRange }}</div> -->
-                <div>
-                  {{ kv.value[i].maxTemp }}°C ~ {{ kv.value[i].minTemp }}°C
-                </div>
-                <div>{{ kv.value[i].weather }}</div>
-              </ng-container>
-
-              <ng-template #noData>
-                <div class="no-data">無資料</div>
-              </ng-template>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <app-camp-weather
+        [districtName]="group.district"
+        [weatherGrouped]="getWeatherByDistrictGrouped(group.district)"
+      ></app-camp-weather>
       <h3 class="camp-title">露營場列表</h3>
       <table class="camp-table">
         <thead>
