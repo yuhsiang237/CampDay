@@ -1,7 +1,9 @@
 <div class="camp-form-wrapper">
   <div class="camp-form-container">
     <h2>CampDay 露營日</h2>
-
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
     <!-- 上方：使用說明 -->
     <div class="form-description">
       <p>本服務提供方便的露營查詢功能。使用者可依照以下步驟操作：</p>

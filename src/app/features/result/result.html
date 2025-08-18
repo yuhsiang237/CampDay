@@ -4,14 +4,14 @@
 ></app-loading-overlay>
 
 <div *ngIf="!isLoading" style="padding: 20px">
+  <div style="margin-bottom: 1.8rem">
+    <app-camp-search-card [campSearch]="campSearch" (back)="goBack()">
+    </app-camp-search-card>
+  </div>
   <div class="camp-list">
     <div *ngFor="let group of campDistData">
       <h2 class="district-title">{{ group.district }}</h2>
       <h3 class="camp-title">露營天氣情況</h3>
-      <div style="margin-bottom: 1.8rem">
-        <app-camp-search-card [campSearch]="campSearch" (back)="goBack()">
-        </app-camp-search-card>
-      </div>
 
       <table border="1" cellpadding="5">
         <thead>

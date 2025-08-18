@@ -1,41 +1,55 @@
+// Angular 核心模組
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Router, RouterModule } from '@angular/router';
+
+// Angular 表單相關
 import {
   FormBuilder,
   FormGroup,
+  FormControl,
   Validators,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { Router } from '@angular/router';
 
-// 第三方套件
-import Papa from 'papaparse';
+// HTTP 與服務
+import { HttpClientModule } from '@angular/common/http';
+import { CampDataService } from '../../core/services/camp-data.service';
 
-// 介面
-import { CampSite } from '../../core/interfaces/CampSite';
+// 自訂工具與介面
 import { max7DaysValidator } from '../../core/utils/form-validators';
+import { CampSite } from '../../core/interfaces/CampSite';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, HttpClientModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, HttpClientModule],
+  providers: [CampDataService],
   templateUrl: './home.html',
   styleUrls: ['./home.scss'],
 })
 export class Home implements OnInit {
-  // 表單
-  campForm!: FormGroup; // 我保證這個變數在使用前會被賦值，請 TypeScript 不要再抱怨它可能是 undefined。
+  // 明確型態化 FormGroup
+  campForm!: FormGroup<{
+    campDate: FormControl<string>;
+    city: FormControl<string>;
+  }>;
 
-  // 下拉選單與資料
-  dates: string[] = [];
-  cities: string[] = [];
-  campSites: CampSite[] = [];
+  // 日期與縣市陣列
+  dates: ReadonlyArray<string> = [];
+  cities: ReadonlyArray<string> = [];
+
+  // CSV 轉出的資料
+  campSites: ReadonlyArray<CampSite> = [];
+
+  // UX 狀態
+  loading: boolean = false;
+  errorMessage: string | null = null;
 
   constructor(
     private fb: FormBuilder,
-    private http: HttpClient,
     private router: Router,
+    private campDataService: CampDataService,
   ) {}
 
   ngOnInit(): void {
@@ -47,69 +61,50 @@ export class Home implements OnInit {
   /** 建立表單 */
   private buildForm(): void {
     this.campForm = this.fb.group({
-      campDate: ['', [Validators.required, max7DaysValidator]],
-      city: ['', Validators.required],
+      campDate: new FormControl('', {
+        nonNullable: true,
+        validators: [Validators.required, max7DaysValidator],
+      }),
+      city: new FormControl('', {
+        nonNullable: true,
+        validators: [Validators.required],
+      }),
     });
   }
 
   /** 產生未來 7 天日期字串 */
   private generateNext7Days(): void {
     const today = new Date();
+    const dates: string[] = [];
     for (let i = 0; i < 7; i++) {
       const date = new Date(today);
       date.setDate(today.getDate() + i);
-      this.dates.push(date.toISOString().split('T')[0]); // YYYY-MM-DD
+      dates.push(date.toISOString().split('T')[0]);
     }
+    this.dates = dates;
   }
 
-  /** 讀取 CSV 並轉成 CampSite[] */
-  private loadCampData(): void {
-    this.http
-      .get('assets/campdata.csv', { responseType: 'text' })
-      .subscribe((csvData) => {
-        this.campSites = this.mapCsvToCampSites(csvData);
-
-        // 取得唯一縣市
-        this.cities = Array.from(
-          new Set(this.campSites.map((site) => site.city)),
-        );
-
-        console.log('縣市選單:', this.cities);
-        console.log('Mapped CampSites:', this.campSites);
-      });
-  }
-
-  /**
-   * 將 CSV 文字轉成 CampSite[]
-   * @param csvData CSV 原始文字
-   * @returns CampSite[]
-   */
-  private mapCsvToCampSites(csvData: string): CampSite[] {
-    const parsed = Papa.parse(csvData, { header: true, skipEmptyLines: true });
-
-    return parsed.data.map((row: any) => ({
-      name: row['露營場名稱'],
-      city: row['縣市別'],
-      cityCode: row['縣市代碼'],
-      district: row['鄉/鎮/市/區'],
-      status: row['營業狀態'],
-      longitude: parseFloat(row['經度']),
-      latitude: parseFloat(row['緯度']),
-      address: row['地址'],
-      phone: row['電話'] || undefined,
-      mobile: row['手機'] || undefined,
-      website: row['網站'] || undefined,
-      complianceOrViolation: row['符合相關法規露營場／違反相關法規露營場'],
-      violationType: row['違反相關法規'],
-      indigenousArea: row['是否有在原民區'],
-      establishedTime: row['露營場設置時間'] || undefined,
-    }));
+  /** 讀取 CSV 並轉成 CampSite[]，加上錯誤處理與 loading */
+  private async loadCampData(): Promise<void> {
+    this.loading = true;
+    this.errorMessage = null;
+    try {
+      const sites = await this.campDataService.getCampSites(
+        'assets/campdata.csv',
+      );
+      this.campSites = sites;
+      this.cities = Array.from(new Set(sites.map((site) => site.city)));
+    } catch (error) {
+      console.error('CSV 讀取失敗', error);
+      this.errorMessage = '資料讀取失敗，請稍後再試。';
+    } finally {
+      this.loading = false;
+    }
   }
 
   /** 表單送出 */
   submitForm(): void {
     if (this.campForm.valid) {
-      // 導向結果頁，並帶入表單資料
       this.router.navigate(['/result'], {
         state: { formData: this.campForm.value },
       });

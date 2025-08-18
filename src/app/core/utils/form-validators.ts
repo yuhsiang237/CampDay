@@ -10,5 +10,5 @@ export function max7DaysValidator(
   const maxDate = new Date();
   maxDate.setDate(today.getDate() + 6);
 
-  return selected <= today || selected > maxDate ? { max7Days: true } : null;
+  return selected > maxDate ? { max7Days: true } : null;
 }
