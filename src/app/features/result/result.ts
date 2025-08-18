@@ -5,18 +5,18 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { firstValueFrom } from 'rxjs';
 import { Location } from '@angular/common';
-import { LoadingOverlay } from './../loading-overlay/loading-overlay';
-import { CampSearchCard } from './../camp-search-card/camp-search-card';
+import { LoadingOverlay } from './../../shared/components/loading-overlay/loading-overlay';
+import { CampSearchCard } from './../../shared/components/camp-search-card/camp-search-card';
 
 // 介面
-import { CampSite } from './../../interfaces/CampSite';
-import { CampSearch } from './../../interfaces/CampSearch';
-import { CampDistData } from '../../interfaces/CampDistData';
-import { WeatherAPI } from '../../interfaces/WeatherAPI';
+import { CampSite } from './../../core/interfaces/CampSite';
+import { CampSearch } from './../../core/interfaces/CampSearch';
+import { CampDistData } from './../../core/interfaces/CampDistData';
+import { WeatherAPI } from './../../core/interfaces/WeatherAPI';
 
-import { environment } from '../../environments/environment';
+import { environment } from './../../../environments/environment';
 
-import weatherAPI from './../../../public/assets/weatherAPI.json';
+import weatherAPI from './../../../../public/assets/weatherAPI.json';
 
 @Component({
   standalone: true,

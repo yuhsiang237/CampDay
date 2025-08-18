@@ -14,7 +14,7 @@ import { AbstractControl } from '@angular/forms';
 import Papa from 'papaparse';
 
 // 介面
-import { CampSite } from './../../interfaces/CampSite';
+import { CampSite } from '../../core/interfaces/CampSite';
 
 @Component({
   selector: 'app-home',

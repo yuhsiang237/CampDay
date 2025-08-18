@@ -9,7 +9,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 // 匯入自訂介面 CampSearch，用來定義資料結構
-import { CampSearch } from './../../interfaces/CampSearch';
+import { CampSearch } from '../../../core/interfaces/CampSearch';
 
 // 使用 @Component 裝飾器定義元件
 @Component({
