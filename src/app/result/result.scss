@@ -77,53 +77,6 @@ html {
   }
 }
 
-/* 搜尋卡片可滑動 */
-.camp-search-card {
-  display: flex;
-  flex-wrap: nowrap;
-  gap: 1rem;
-  padding: 1rem;
-  background-color: #fdfdfd;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-
-  .field {
-    flex: 0 0 auto;
-    min-width: 120px;
-
-    .label {
-      font-size: 0.8rem;
-      color: #666;
-      margin-bottom: 0.2rem;
-    }
-
-    .value {
-      font-size: 1rem;
-      font-weight: 500;
-      color: #222;
-      word-break: break-word;
-    }
-  }
-}
-
-/* 返回按鈕 */
-.btn-back {
-  padding: 12px;
-  border: none;
-  border-radius: 6px;
-  background-color: #6c757d;
-  color: #fff;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.btn-back:hover {
-  background-color: #5a6268;
-}
-
 .go-btn {
   padding: 12px 0;
   border: none;
