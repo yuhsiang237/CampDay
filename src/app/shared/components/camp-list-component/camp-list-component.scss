@@ -1,0 +1,111 @@
+/* result.scss */
+body,
+html {
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+/* camp-list 容器 */
+.camp-list {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+
+  .district-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #ccc;
+    padding-bottom: 0.2rem;
+    color: #333;
+  }
+
+  @media (max-width: 600px) {
+    margin: 10px;
+  }
+}
+
+/* 按鈕樣式 */
+.go-btn {
+  padding: 12px 0;
+  border: none;
+  border-radius: 6px;
+  background-color: #007bff;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.go-btn:hover {
+  background-color: #0056b3;
+}
+
+/* 連結按鈕 */
+a.btn-link {
+  display: inline-block;
+  padding: 0.2rem 0.5rem;
+  background-color: #1e88e5;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 0.85rem;
+
+  &:hover {
+    background-color: #1565c0;
+  }
+}
+/* camp-weather.component.scss */
+
+/* table 樣式 */
+table {
+  border: 0;
+  display: block;
+  width: 95vw;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  white-space: nowrap;
+  border-collapse: collapse;
+  table-layout: fixed;
+  margin-bottom: 2rem;
+}
+
+th,
+td {
+  border: 1px solid #ccc;
+  padding: 8px 12px;
+  text-align: left;
+  vertical-align: middle;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+thead th {
+  background-color: #f0f0f0;
+  font-weight: bold;
+  color: #555;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+tbody tr:hover {
+  background-color: #f0f8ff;
+}
+
+/* 標題樣式 */
+.camp-title {
+  font-size: 1.2rem;
+  margin: 15px 0 5px 0;
+  color: #555;
+}
+
+/* 手機版調整 */
+@media (max-width: 600px) {
+  table {
+    width: 95vw;
+    min-width: 300px;
+  }
+}

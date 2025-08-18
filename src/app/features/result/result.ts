@@ -8,6 +8,7 @@ import { Location } from '@angular/common';
 import { LoadingOverlay } from './../../shared/components/loading-overlay/loading-overlay';
 import { CampSearchCard } from './../../shared/components/camp-search-card/camp-search-card';
 import { CampWeatherComponent } from './../../shared/components/camp-weather-component/camp-weather-component';
+import { CampListComponent } from './../../shared/components/camp-list-component/camp-list-component';
 
 // 介面
 import { CampSite } from './../../core/interfaces/CampSite';
@@ -28,6 +29,7 @@ import weatherAPI from './../../../../public/assets/weatherAPI.json';
     CampSearchCard,
     LoadingOverlay,
     CampWeatherComponent,
+    CampListComponent,
   ],
   templateUrl: './result.html',
   styleUrl: './result.scss',

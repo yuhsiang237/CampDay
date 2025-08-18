@@ -1,0 +1,42 @@
+<!-- camp-list.component.html -->
+<h3 class="camp-title">露營場列表</h3>
+<table class="camp-table">
+  <thead>
+    <tr>
+      <th class="col-name">露營場名稱</th>
+      <th class="col-city">縣市</th>
+      <th class="col-address">地址</th>
+      <th class="col-phone">電話</th>
+      <th class="col-status">營業狀態</th>
+      <th class="col-website">網站</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let site of campSites">
+      <td class="col-name">{{ site.name }}</td>
+      <td class="col-city">{{ site.city }}</td>
+      <td class="col-address" [title]="site.address">
+        <span class="text">{{ site.address || "-" }}</span>
+      </td>
+      <td class="col-phone">{{ site.phone || site.mobile || "-" }}</td>
+      <td class="col-status">{{ site.status || "-" }}</td>
+      <td class="col-website">
+        <a
+          *ngIf="site.website"
+          [href]="site.website"
+          target="_blank"
+          class="btn-link"
+          >前往</a
+        >
+        <span *ngIf="!site.website">
+          <a
+            [href]="'https://www.google.com/search?q=' + encodeURL(site.name)"
+            target="_blank"
+            class="btn-link"
+            >前往</a
+          >
+        </span>
+      </td>
+    </tr>
+  </tbody>
+</table>
