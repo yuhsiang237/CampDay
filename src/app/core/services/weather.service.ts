@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { firstValueFrom } from 'rxjs';
+import { catchError, map, Observable, of } from 'rxjs';
 import { environment } from '@environments/environment';
 import { WeatherAPI } from '@core/interfaces/WeatherAPI';
 import weatherAPI from './../../../../public/assets/weatherAPI.json';
@@ -23,18 +23,19 @@ export class WeatherService {
     return this.cityApiMap[city]?.api;
   }
 
-  /** 取得天氣資料 */
-  async getWeather(city: string): Promise<DistrictWeather[]> {
-    try {
-      const apiUrl = `https://opendata.cwa.gov.tw/api/${this.getApiByCity(
-        city,
-      )}?Authorization=${environment.CWA_API_KEY}`;
-      const weatherResponse = await firstValueFrom(this.http.get<any>(apiUrl));
-      return weatherResponse.records.Locations[0].Location as DistrictWeather[];
-    } catch (err) {
-      console.error('取得天氣資料失敗', err);
-      return [];
-    }
+  /** 取得天氣資料 (Observable 版本) */
+  getWeather(city: string): Observable<DistrictWeather[]> {
+    const apiUrl = `https://opendata.cwa.gov.tw/api/${this.getApiByCity(
+      city,
+    )}?Authorization=${environment.CWA_API_KEY}`;
+
+    return this.http.get<any>(apiUrl).pipe(
+      map((res) => res.records.Locations[0].Location as DistrictWeather[]),
+      catchError((err) => {
+        console.error('取得天氣資料失敗', err);
+        return of([]); // 發生錯誤時回傳空陣列，避免崩潰
+      }),
+    );
   }
 
   /** 將天氣資料分組，並格式化成上午/下午區段 */

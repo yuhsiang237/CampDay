@@ -16,6 +16,10 @@ import {
 import { HttpClientModule } from '@angular/common/http';
 import { CampDataService } from '@core/services/camp-data.service';
 
+// RxJS
+import { catchError, finalize, map } from 'rxjs/operators';
+import { of } from 'rxjs';
+
 // 自訂工具與介面
 import { max7DaysValidator } from '@core/utils/form-validators';
 import { CampSite } from '@core/interfaces/CampSite';
@@ -43,7 +47,7 @@ export class Home implements OnInit {
   campSites: ReadonlyArray<CampSite> = [];
 
   // UX 狀態
-  loading: boolean = false;
+  loading = false;
   errorMessage: string | null = null;
 
   constructor(
@@ -55,7 +59,7 @@ export class Home implements OnInit {
   ngOnInit(): void {
     this.generateNext7Days();
     this.buildForm();
-    this.loadCampData();
+    this.loadCampData(); // ✅ 改成 RxJS
   }
 
   /** 建立表單 */
@@ -85,19 +89,27 @@ export class Home implements OnInit {
   }
 
   /** 讀取 CSV 並轉成 CampSite[]，加上錯誤處理與 loading */
-  private async loadCampData(): Promise<void> {
+  private loadCampData(): void {
     this.loading = true;
     this.errorMessage = null;
-    try {
-      const sites = await this.campDataService.getCampSites();
-      this.campSites = sites;
-      this.cities = Array.from(new Set(sites.map((site) => site.city)));
-    } catch (error) {
-      console.error('CSV 讀取失敗', error);
-      this.errorMessage = '資料讀取失敗，請稍後再試。';
-    } finally {
-      this.loading = false;
-    }
+
+    this.campDataService
+      .getCampSites() // ✅ 回傳 Observable<CampSite[]>
+      .pipe(
+        map((sites) => {
+          this.campSites = sites;
+          this.cities = Array.from(new Set(sites.map((site) => site.city)));
+        }),
+        catchError((error) => {
+          console.error('CSV 讀取失敗', error);
+          this.errorMessage = '資料讀取失敗，請稍後再試。';
+          return of(null); // ✅ 回傳 fallback Observable，避免中斷
+        }),
+        finalize(() => {
+          this.loading = false;
+        }),
+      )
+      .subscribe();
   }
 
   /** 表單送出 */

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { firstValueFrom } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 import Papa from 'papaparse';
 
 // 介面
@@ -11,15 +12,19 @@ import { CampDistData } from '@core/interfaces/CampDistData';
   providedIn: 'root', // ✅ standalone component 可以直接注入
 })
 export class CampDataService {
-  constructor(private http: HttpClient) {}
   private readonly csvUrl: string = 'assets/campdata.csv';
 
+  constructor(private http: HttpClient) {}
+
   /** 讀 CSV 並轉成 CampSite[] */
-  async getCampSites(): Promise<CampSite[]> {
-    const csvData = await firstValueFrom(
-      this.http.get(this.csvUrl, { responseType: 'text' }),
+  getCampSites(): Observable<CampSite[]> {
+    return this.http.get(this.csvUrl, { responseType: 'text' }).pipe(
+      map((csvData) => this.mapCsvToCampSites(csvData)),
+      catchError((err) => {
+        console.error('CSV 讀取失敗', err);
+        return of([] as CampSite[]); // 錯誤時回傳空陣列，不讓 stream 爆掉
+      }),
     );
-    return this.mapCsvToCampSites(csvData);
   }
 
   /** CSV 文字轉 CampSite[] */
