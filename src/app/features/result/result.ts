@@ -9,12 +9,19 @@ import { CampWeatherComponent } from './../../shared/components/camp-weather-com
 import { CampListComponent } from './../../shared/components/camp-list-component/camp-list-component';
 
 // 介面
-import { CampSite } from './../../core/interfaces/CampSite';
 import { CampSearch } from './../../core/interfaces/CampSearch';
 import { CampDistData } from './../../core/interfaces/CampDistData';
+import { DistrictWeather, GroupedWeather } from '../../core/interfaces/WeatherAPI';
 
+// 服務
 import { CampDataService } from '../../core/services/camp-data.service';
 import { WeatherService } from '../../core/services/weather.service';
+
+// 型別化 formData，給 default 空字串
+interface FormData {
+  campDate: string;
+  city: string;
+}
 
 @Component({
   standalone: true,
@@ -29,14 +36,13 @@ import { WeatherService } from '../../core/services/weather.service';
   ],
   providers: [CampDataService, WeatherService],
   templateUrl: './result.html',
-  styleUrl: './result.scss',
+  styleUrls: ['./result.scss'],
 })
 export class Result {
-  formData: any;
-  campSearch!: CampSearch;
-  campSites: CampSite[] = [];
+  formData!: FormData;
+  campSearch! : CampSearch;
   campDistData: CampDistData[] = [];
-  locationWeather: any[] = [];
+  locationWeather: DistrictWeather[] = [];
   isLoading: boolean = true;
 
   constructor(
@@ -45,39 +51,56 @@ export class Result {
     private campDataService: CampDataService,
     private weatherService: WeatherService,
   ) {
-    const navigation = this.router.getCurrentNavigation();
-    this.formData = navigation?.extras.state?.['formData'];
+    const navData = this.router.getCurrentNavigation()?.extras.state?.['formData'];
+    this.formData = {
+      campDate: navData?.campDate ?? '',
+      city: navData?.city ?? '',
+    };
     this.campSearch = this.toCampSearch(this.formData);
   }
 
   async ngOnInit(): Promise<void> {
     this.isLoading = true;
-    await this.loadWeather();
-    await this.loadCampSites();
+    await Promise.all([this.loadWeather(), this.loadCampSites()]);
     this.isLoading = false;
   }
-  
+
   private async loadWeather(): Promise<void> {
-    this.locationWeather = await this.weatherService.getWeather(this.campSearch.city);
+    try {
+      this.locationWeather = await this.weatherService.getWeather(this.campSearch.city);
+    } catch (err) {
+      console.error('載入天氣資料失敗', err);
+      this.locationWeather = [];
+    }
   }
+
   private async loadCampSites(): Promise<void> {
-    this.campSites = await this.campDataService.getCampSites();
-    const filtered = this.campDataService.filterByCity(this.campSites, this.campSearch.city);
-    this.campDistData = this.campDataService.groupByDistrict(filtered);
+    try {
+      const campSites = await this.campDataService.getCampSites();
+      const filtered = this.campDataService.filterByCity(campSites, this.campSearch.city);
+      this.campDistData = this.campDataService.groupByDistrict(filtered);
+    } catch (err) {
+      console.error('載入營地資料失敗', err);
+      this.campDistData = [];
+    }
   }
 
   goBack(): void {
     this.location.back();
   }
 
-  private toCampSearch(data: any): CampSearch {
+  private toCampSearch(data: FormData): CampSearch {
     return {
-      campDate: data?.campDate ?? '',
-      city: data?.city ?? '',
+      campDate: data.campDate,
+      city: data.city,
     };
   }
 
-  getWeatherByDistrictGrouped(districtName: string) {
+  getWeatherByDistrictGrouped(districtName: string): GroupedWeather {
+    if (!this.locationWeather || this.locationWeather.length === 0) {
+      // 尚未載入資料時回傳空物件
+      return {};
+    }
     return this.weatherService.getWeatherByDistrictGrouped(this.locationWeather, districtName);
   }
 }

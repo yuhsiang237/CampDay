@@ -4,6 +4,7 @@ import { firstValueFrom } from 'rxjs';
 import { environment } from './../../../environments/environment';
 import { WeatherAPI } from '../interfaces/WeatherAPI';
 import weatherAPI from './../../../../public/assets/weatherAPI.json';
+import { DistrictWeather, GroupedWeather, WeatherPeriod } from '../interfaces/WeatherAPI';
 
 @Injectable({
   providedIn: 'root',
@@ -19,33 +20,35 @@ export class WeatherService {
   }
 
   /** 取得天氣資料 */
-  async getWeather(city: string): Promise<any[]> {
+  async getWeather(city: string): Promise<DistrictWeather[]> {
     try {
-      const apiUrl = `https://opendata.cwa.gov.tw/api/${this.getApiByCity(city)}?Authorization=${environment.CWA_API_KEY}`;
-      const weather = await firstValueFrom(this.http.get<any>(apiUrl));
-      return weather.records.Locations[0].Location;
+      const apiUrl = `https://opendata.cwa.gov.tw/api/${this.getApiByCity(
+        city
+      )}?Authorization=${environment.CWA_API_KEY}`;
+      const weatherResponse = await firstValueFrom(this.http.get<any>(apiUrl));
+      return weatherResponse.records.Locations[0].Location as DistrictWeather[];
     } catch (err) {
       console.error('取得天氣資料失敗', err);
       return [];
     }
   }
 
-  /** 將天氣資料分組，並格式化成上午/下午 slot */
-  normalizeWeatherSlots(raw: any): any {
-    const normalized: any = {};
+  /** 將天氣資料分組，並格式化成上午/下午區段 */
+  normalizeWeatherSlots(raw: GroupedWeather): GroupedWeather {
+    const normalized: GroupedWeather = {};
 
     Object.keys(raw).forEach((date) => {
       const slots = raw[date];
-      const newSlots: (any | null)[] = [null, null];
+      const newSlots: (GroupedWeather[typeof date][0] | null)[] = [null, null];
 
-      slots.forEach((slot: any) => {
-        const [startStr, endStr] = slot.timeRange.split('~').map((s: string) => s.trim());
+      slots.forEach((slot) => {
+        if (!slot) return;
+
+        const [startStr, endStr] = slot.timeRange.split('~').map((s) => s.trim());
         let startHour = parseInt(startStr.split(':')[0], 10);
         let endHour = parseInt(endStr.split(':')[0], 10);
 
-        if (endHour <= startHour) {
-          endHour += 24;
-        }
+        if (endHour <= startHour) endHour += 24;
 
         const midHour = Math.floor((startHour + endHour) / 2) % 24;
 
@@ -56,38 +59,48 @@ export class WeatherService {
         }
       });
 
-      normalized[date] = newSlots;
+      normalized[date] = newSlots as GroupedWeather[typeof date];
     });
 
     return normalized;
   }
 
   /** 指定行政區分組天氣 */
-  getWeatherByDistrictGrouped(locationWeather: any[], districtName: string): { [date: string]: any[] } {
-    const districtData = locationWeather?.find((item: any) => item.LocationName === districtName);
+  getWeatherByDistrictGrouped(
+    locationWeather: DistrictWeather[],
+    districtName: string
+  ): GroupedWeather {
+    const districtData = locationWeather.find((item) => item.LocationName === districtName);
     if (!districtData) return {};
 
-    const grouped: { [date: string]: any[] } = {};
-    const elements: any = {};
-    districtData.WeatherElement.forEach((el: any) => (elements[el.ElementName] = el.Time));
+    const grouped: GroupedWeather = {};
+    const elements: Record<string, WeatherPeriod[]> = {};
 
-    const maxTemps = elements['最高溫度'];
-    const minTemps = elements['最低溫度'];
-    const weatherStates = elements['天氣現象'];
+    districtData.WeatherElement.forEach((el) => (elements[el.ElementName] = el.Time));
 
-    maxTemps.forEach((slot: any, idx: number) => {
-      const start = new Date(slot.StartTime);
-      const end = new Date(slot.EndTime);
+    const maxTemps = elements['最高溫度'] || [];
+    const minTemps = elements['最低溫度'] || [];
+    const weatherStates = elements['天氣現象'] || [];
+
+    maxTemps.forEach((period, idx) => {
+      const start = new Date(period.StartTime);
+      const end = new Date(period.EndTime);
       const dateStr = start.toISOString().slice(5, 10).replace('-', '/');
 
       if (!grouped[dateStr]) grouped[dateStr] = [];
 
       grouped[dateStr].push({
         label: start.getDate() !== end.getDate() ? '夜間' : '',
-        timeRange: `${start.getHours().toString().padStart(2, '0')}:${start.getMinutes().toString().padStart(2, '0')} ~ ${end.getHours().toString().padStart(2, '0')}:${end.getMinutes().toString().padStart(2, '0')}`,
-        maxTemp: slot.ElementValue[0].MaxTemperature,
-        minTemp: minTemps[idx].ElementValue[0].MinTemperature,
-        weather: weatherStates[idx].ElementValue[0].Weather,
+        timeRange: `${start.getHours().toString().padStart(2, '0')}:${start
+          .getMinutes()
+          .toString()
+          .padStart(2, '0')} ~ ${end.getHours().toString().padStart(2, '0')}:${end
+            .getMinutes()
+            .toString()
+            .padStart(2, '0')}`,
+        maxTemp: period.ElementValue[0].MaxTemperature,
+        minTemp: minTemps[idx]?.ElementValue[0]?.MinTemperature,
+        weather: weatherStates[idx]?.ElementValue[0]?.Weather,
       });
     });
 
