@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { environment } from './../../../environments/environment';
-import { WeatherAPI } from '../interfaces/WeatherAPI';
+import { environment } from '@environments/environment';
+import { WeatherAPI } from '@core/interfaces/WeatherAPI';
 import weatherAPI from './../../../../public/assets/weatherAPI.json';
-import { DistrictWeather, GroupedWeather, WeatherPeriod } from '../interfaces/WeatherAPI';
+import { DistrictWeather, GroupedWeather, WeatherPeriod } from '@core/interfaces/WeatherAPI';
 
 @Injectable({
   providedIn: 'root',

@@ -4,8 +4,8 @@ import { firstValueFrom } from 'rxjs';
 import Papa from 'papaparse';
 
 // 介面
-import { CampSite } from '../interfaces/CampSite';
-import { CampDistData } from '../interfaces/CampDistData';
+import { CampSite } from '@core/interfaces/CampSite';
+import { CampDistData } from '@core/interfaces/CampDistData';
 
 @Injectable({
   providedIn: 'root', // ✅ standalone component 可以直接注入

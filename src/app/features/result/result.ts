@@ -3,19 +3,19 @@ import { Router } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { Location } from '@angular/common';
-import { LoadingOverlay } from './../../shared/components/loading-overlay/loading-overlay';
-import { CampSearchCard } from './../../shared/components/camp-search-card/camp-search-card';
-import { CampWeatherComponent } from './../../shared/components/camp-weather-component/camp-weather-component';
-import { CampListComponent } from './../../shared/components/camp-list-component/camp-list-component';
+import { LoadingOverlay } from '@shared/components/loading-overlay/loading-overlay';
+import { CampSearchCard } from '@shared/components/camp-search-card/camp-search-card';
+import { CampWeatherComponent } from '@shared/components/camp-weather-component/camp-weather-component';
+import { CampListComponent } from '@shared/components/camp-list-component/camp-list-component';
 
 // 介面
-import { CampSearch } from './../../core/interfaces/CampSearch';
-import { CampDistData } from './../../core/interfaces/CampDistData';
-import { DistrictWeather, GroupedWeather } from '../../core/interfaces/WeatherAPI';
+import { CampSearch } from '@core/interfaces/CampSearch';
+import { CampDistData } from '@core/interfaces/CampDistData';
+import { DistrictWeather, GroupedWeather } from '@core/interfaces/WeatherAPI';
 
 // 服務
-import { CampDataService } from '../../core/services/camp-data.service';
-import { WeatherService } from '../../core/services/weather.service';
+import { CampDataService } from '@core/services/camp-data.service';
+import { WeatherService } from '@core/services/weather.service';
 
 // 型別化 formData，給 default 空字串
 interface FormData {

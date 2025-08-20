@@ -14,11 +14,11 @@ import {
 
 // HTTP 與服務
 import { HttpClientModule } from '@angular/common/http';
-import { CampDataService } from '../../core/services/camp-data.service';
+import { CampDataService } from '@core/services/camp-data.service';
 
 // 自訂工具與介面
-import { max7DaysValidator } from '../../core/utils/form-validators';
-import { CampSite } from '../../core/interfaces/CampSite';
+import { max7DaysValidator } from '@core/utils/form-validators';
+import { CampSite } from '@core/interfaces/CampSite';
 
 @Component({
   selector: 'app-home',
