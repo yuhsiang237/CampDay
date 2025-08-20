@@ -12,8 +12,8 @@ import { CampDistData } from '@core/interfaces/CampDistData';
 })
 export class CampDataService {
   constructor(private http: HttpClient) {}
-  private readonly csvUrl : string= 'assets/campdata.csv';
-  
+  private readonly csvUrl: string = 'assets/campdata.csv';
+
   /** 讀 CSV 並轉成 CampSite[] */
   async getCampSites(): Promise<CampSite[]> {
     const csvData = await firstValueFrom(

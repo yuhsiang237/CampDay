@@ -4,7 +4,11 @@ import { firstValueFrom } from 'rxjs';
 import { environment } from '@environments/environment';
 import { WeatherAPI } from '@core/interfaces/WeatherAPI';
 import weatherAPI from './../../../../public/assets/weatherAPI.json';
-import { DistrictWeather, GroupedWeather, WeatherPeriod } from '@core/interfaces/WeatherAPI';
+import {
+  DistrictWeather,
+  GroupedWeather,
+  WeatherPeriod,
+} from '@core/interfaces/WeatherAPI';
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +16,7 @@ import { DistrictWeather, GroupedWeather, WeatherPeriod } from '@core/interfaces
 export class WeatherService {
   private cityApiMap: WeatherAPI = weatherAPI as WeatherAPI;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   /** 根據縣市名稱取得 API URL */
   private getApiByCity(city: string): string | undefined {
@@ -23,7 +27,7 @@ export class WeatherService {
   async getWeather(city: string): Promise<DistrictWeather[]> {
     try {
       const apiUrl = `https://opendata.cwa.gov.tw/api/${this.getApiByCity(
-        city
+        city,
       )}?Authorization=${environment.CWA_API_KEY}`;
       const weatherResponse = await firstValueFrom(this.http.get<any>(apiUrl));
       return weatherResponse.records.Locations[0].Location as DistrictWeather[];
@@ -44,7 +48,9 @@ export class WeatherService {
       slots.forEach((slot) => {
         if (!slot) return;
 
-        const [startStr, endStr] = slot.timeRange.split('~').map((s) => s.trim());
+        const [startStr, endStr] = slot.timeRange
+          .split('~')
+          .map((s) => s.trim());
         let startHour = parseInt(startStr.split(':')[0], 10);
         let endHour = parseInt(endStr.split(':')[0], 10);
 
@@ -53,9 +59,17 @@ export class WeatherService {
         const midHour = Math.floor((startHour + endHour) / 2) % 24;
 
         if (midHour < 12) {
-          newSlots[0] = { ...slot, timeRange: '00:00 ~ 12:00', label: '凌晨~中午' };
+          newSlots[0] = {
+            ...slot,
+            timeRange: '00:00 ~ 12:00',
+            label: '凌晨~中午',
+          };
         } else {
-          newSlots[1] = { ...slot, timeRange: '13:00 ~ 23:00', label: '下午~晚上' };
+          newSlots[1] = {
+            ...slot,
+            timeRange: '13:00 ~ 23:00',
+            label: '下午~晚上',
+          };
         }
       });
 
@@ -68,15 +82,19 @@ export class WeatherService {
   /** 指定行政區分組天氣 */
   getWeatherByDistrictGrouped(
     locationWeather: DistrictWeather[],
-    districtName: string
+    districtName: string,
   ): GroupedWeather {
-    const districtData = locationWeather.find((item) => item.LocationName === districtName);
+    const districtData = locationWeather.find(
+      (item) => item.LocationName === districtName,
+    );
     if (!districtData) return {};
 
     const grouped: GroupedWeather = {};
     const elements: Record<string, WeatherPeriod[]> = {};
 
-    districtData.WeatherElement.forEach((el) => (elements[el.ElementName] = el.Time));
+    districtData.WeatherElement.forEach(
+      (el) => (elements[el.ElementName] = el.Time),
+    );
 
     const maxTemps = elements['最高溫度'] || [];
     const minTemps = elements['最低溫度'] || [];
@@ -94,10 +112,13 @@ export class WeatherService {
         timeRange: `${start.getHours().toString().padStart(2, '0')}:${start
           .getMinutes()
           .toString()
-          .padStart(2, '0')} ~ ${end.getHours().toString().padStart(2, '0')}:${end
-            .getMinutes()
-            .toString()
-            .padStart(2, '0')}`,
+          .padStart(
+            2,
+            '0',
+          )} ~ ${end.getHours().toString().padStart(2, '0')}:${end
+          .getMinutes()
+          .toString()
+          .padStart(2, '0')}`,
         maxTemp: period.ElementValue[0].MaxTemperature,
         minTemp: minTemps[idx]?.ElementValue[0]?.MinTemperature,
         weather: weatherStates[idx]?.ElementValue[0]?.Weather,

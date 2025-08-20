@@ -25,7 +25,6 @@ interface FormData {
   city: string;
 }
 
-
 @Component({
   standalone: true,
   selector: 'app-result',
@@ -43,7 +42,7 @@ interface FormData {
 })
 export class Result {
   formData!: FormData;
-  campSearch! : CampSearch;
+  campSearch!: CampSearch;
   campDistData: CampDistData[] = [];
   locationWeather: DistrictWeather[] = [];
   isLoading: boolean = true;
@@ -54,7 +53,8 @@ export class Result {
     private campDataService: CampDataService,
     private weatherService: WeatherService,
   ) {
-    const navData = this.router.getCurrentNavigation()?.extras.state?.['formData'];
+    const navData =
+      this.router.getCurrentNavigation()?.extras.state?.['formData'];
     this.formData = {
       campDate: navData?.campDate ?? '',
       city: navData?.city ?? '',
@@ -70,7 +70,9 @@ export class Result {
 
   private async loadWeather(): Promise<void> {
     try {
-      this.locationWeather = await this.weatherService.getWeather(this.campSearch.city);
+      this.locationWeather = await this.weatherService.getWeather(
+        this.campSearch.city,
+      );
     } catch (err) {
       console.error('載入天氣資料失敗', err);
       this.locationWeather = [];
@@ -80,7 +82,10 @@ export class Result {
   private async loadCampSites(): Promise<void> {
     try {
       const campSites = await this.campDataService.getCampSites();
-      const filtered = this.campDataService.filterByCity(campSites, this.campSearch.city);
+      const filtered = this.campDataService.filterByCity(
+        campSites,
+        this.campSearch.city,
+      );
       this.campDistData = this.campDataService.groupByDistrict(filtered);
     } catch (err) {
       console.error('載入營地資料失敗', err);
@@ -104,6 +109,9 @@ export class Result {
       // 尚未載入資料時回傳空物件
       return {};
     }
-    return this.weatherService.getWeatherByDistrictGrouped(this.locationWeather, districtName);
+    return this.weatherService.getWeatherByDistrictGrouped(
+      this.locationWeather,
+      districtName,
+    );
   }
 }
