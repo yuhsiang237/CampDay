@@ -1,11 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { CampSite } from '../interfaces/CampSite';
 import Papa from 'papaparse';
 
+// 介面
+import { CampSite } from '../interfaces/CampSite';
+import { CampDistData } from '../interfaces/CampDistData';
+
 @Injectable({
-  providedIn: 'root', // ✅ 必須加，standalone component 才能注入
+  providedIn: 'root', // ✅ standalone component 可以直接注入
 })
 export class CampDataService {
   constructor(private http: HttpClient) {}
@@ -24,6 +27,7 @@ export class CampDataService {
       header: true,
       skipEmptyLines: true,
     });
+
     return (parsed.data as Record<string, string>[]).map((row) => ({
       name: row['露營場名稱'],
       city: row['縣市別'],
@@ -41,5 +45,27 @@ export class CampDataService {
       indigenousArea: row['是否有在原民區'],
       establishedTime: row['露營場設置時間'] || undefined,
     }));
+  }
+
+  /** 過濾符合縣市的露營場 */
+  filterByCity(sites: CampSite[], city: string): CampSite[] {
+    return sites.filter((site) => site.city.trim() === city.trim());
+  }
+
+  /** 依 district 分組 CampSite，回傳 CampDistData[] */
+  groupByDistrict(sites: CampSite[]): CampDistData[] {
+    const map: Record<string, CampSite[]> = {};
+
+    sites.forEach((site) => {
+      const key = site.district || '未分類';
+      if (!map[key]) {
+        map[key] = [];
+      }
+      map[key].push(site);
+    });
+
+    return Object.keys(map)
+      .map((key) => ({ district: key, data: map[key] }))
+      .sort((a, b) => a.district.localeCompare(b.district));
   }
 }
