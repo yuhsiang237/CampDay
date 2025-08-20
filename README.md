@@ -1,5 +1,13 @@
-# CampDay
+# CampDay 露營日
+本服務提供方便的露營查詢功能。使用者可依照以下步驟操作：  
 
+選擇您想露營的日期（限制:未來 7 天）。   
+選擇縣市以篩選露營地點。  
+點擊「搜尋」按鈕，系統將列出符合條件的露營地點資訊。  
+每個露營地點同時提供當日及未來天氣預報，方便規劃行程。  
+所有欄位皆為必填，未填寫將提示錯誤訊息。  
+
+## DEV
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.1.1.
 
 ## Development server
