@@ -12,8 +12,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 
-// HTTP 與服務
-import { HttpClientModule } from '@angular/common/http';
+// 服務
 import { CampDataService } from '@core/services/camp-data.service';
 
 // RxJS
@@ -27,8 +26,7 @@ import { CampSite } from '@core/interfaces/CampSite';
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule, HttpClientModule],
-  providers: [CampDataService],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './home.html',
   styleUrls: ['./home.scss'],
 })

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { Router } from '@angular/router';
-import { HttpClientModule } from '@angular/common/http';
 
 import { CampDataService } from '@core/services/camp-data.service';
 import { WeatherService } from '@core/services/weather.service';
@@ -27,13 +26,11 @@ interface FormData {
   selector: 'app-result',
   imports: [
     CommonModule,
-    HttpClientModule,
     CampSearchCard,
     LoadingOverlay,
     CampWeatherComponent,
     CampListComponent,
   ],
-  providers: [CampDataService, WeatherService],
   templateUrl: './result.html',
   styleUrls: ['./result.scss'],
 })
