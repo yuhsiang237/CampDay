@@ -93,17 +93,4 @@ export class WeatherService {
 
     return this.normalizeWeatherSlots(grouped);
   }
-
-  /** 取得某個地點的原始天氣 element */
-  getWeatherByLocationAny(locationWeather: any[], location: string) {
-    const locationData = locationWeather?.find((item) => item.LocationName === location);
-    if (!locationData) return null;
-
-    const result: any = {};
-    locationData.WeatherElement.forEach((element: any) => {
-      result[element.ElementName] = element.Time;
-    });
-
-    return result;
-  }
 }

@@ -89,9 +89,7 @@ export class Home implements OnInit {
     this.loading = true;
     this.errorMessage = null;
     try {
-      const sites = await this.campDataService.getCampSites(
-        'assets/campdata.csv',
-      );
+      const sites = await this.campDataService.getCampSites();
       this.campSites = sites;
       this.cities = Array.from(new Set(sites.map((site) => site.city)));
     } catch (error) {

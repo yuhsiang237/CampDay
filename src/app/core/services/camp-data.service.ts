@@ -12,11 +12,12 @@ import { CampDistData } from '../interfaces/CampDistData';
 })
 export class CampDataService {
   constructor(private http: HttpClient) {}
-
+  private readonly csvUrl : string= 'assets/campdata.csv';
+  
   /** 讀 CSV 並轉成 CampSite[] */
-  async getCampSites(url: string): Promise<CampSite[]> {
+  async getCampSites(): Promise<CampSite[]> {
     const csvData = await firstValueFrom(
-      this.http.get(url, { responseType: 'text' }),
+      this.http.get(this.csvUrl, { responseType: 'text' }),
     );
     return this.mapCsvToCampSites(csvData);
   }

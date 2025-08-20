@@ -47,36 +47,37 @@ export class Result {
   ) {
     const navigation = this.router.getCurrentNavigation();
     this.formData = navigation?.extras.state?.['formData'];
-    this.campSearch = this.toCampSiteSearchResults(this.formData);
+    this.campSearch = this.toCampSearch(this.formData);
   }
 
   async ngOnInit(): Promise<void> {
+    this.isLoading = true;
+    await this.loadWeather();
+    await this.loadCampSites();
+    this.isLoading = false;
+  }
+  
+  private async loadWeather(): Promise<void> {
     this.locationWeather = await this.weatherService.getWeather(this.campSearch.city);
-
-    this.campSites = await this.campDataService.getCampSites('assets/campdata.csv');
+  }
+  private async loadCampSites(): Promise<void> {
+    this.campSites = await this.campDataService.getCampSites();
     const filtered = this.campDataService.filterByCity(this.campSites, this.campSearch.city);
     this.campDistData = this.campDataService.groupByDistrict(filtered);
-
-    this.isLoading = false;
   }
 
   goBack(): void {
     this.location.back();
   }
 
-  /** 轉換 formData 成 CampSearch */
-  private toCampSiteSearchResults(data: any): CampSearch {
+  private toCampSearch(data: any): CampSearch {
     return {
       campDate: data?.campDate ?? '',
       city: data?.city ?? '',
     };
   }
-  
+
   getWeatherByDistrictGrouped(districtName: string) {
     return this.weatherService.getWeatherByDistrictGrouped(this.locationWeather, districtName);
-  }
-
-  getWeatherByLocationAny(location: string) {
-    return this.weatherService.getWeatherByLocationAny(this.locationWeather, location);
   }
 }
