@@ -1,95 +1,71 @@
-我幫你依照 **Google TypeScript / Angular 開發者標準** 做 Code Review 打分：
+我依照 **Google Angular Style Guide** 幫你針對這份 `Result` component 做完整 code review 和評分，並整理成表格形式：
+
+| 面向         | 分數     |
+| ---------- | ------ |
+| 可讀性 / 可維護性 | 8.5/10 |
+| 型態安全性      | 9/10   |
+| UX / 使用者體驗 | 8.5/10 |
+| 最佳實踐       | 8/10   |
+
+**總平均：** 8.5 / 10
 
 ---
 
-## **1️⃣ 可讀性 / 可維護性 (Readability & Maintainability)**
+### 評語簡述
 
-**優點：**
+**1️⃣ 可讀性 / 可維護性 (8.5/10)**
 
-- Import 分區清楚，使用 alias (`@core` / `@shared`)，大型專案可維護性高。
-- Component 拆分方法清楚：`loadWeather`、`loadCampSites`、`toCampSearch`、`getWeatherByDistrictGrouped`。
-- 命名清楚，直覺易懂。
+* 優點：
 
-**建議：**
+  * 方法劃分清楚：`loadAllData()`, `loadWeather$()`, `loadCampSites$()`, `toCampSearch()`。
+  * 變數命名直覺：`formData`, `campSearch`, `locationWeather`, `campDistData`。
+  * 注釋簡單明確，說明 RxJS pipeline 作用。
+* 改進建議：
 
-- Component class 可加 `Component` 後綴，例如 `ResultComponent`，符合 Angular Style Guide。
-- `this.router.getCurrentNavigation()?.extras.state?.['formData']` 寫法可簡化，可用解構 + default：
+  * `forkJoin(...).subscribe()` 直接在 component 中更新狀態，如果 component destroy 會造成 memory leak，建議改用 `async` pipe 或 `takeUntil(destroy$)`。
+  * 可考慮將 `loadWeather$` 與 `loadCampSites$` 進一步抽成 service method，提高可重用性。
 
-```ts
-const { campDate = "", city = "" } = this.router.getCurrentNavigation()?.extras.state?.["formData"] ?? {};
-this.formData = { campDate, city };
-```
+**2️⃣ 型態安全性 (9/10)**
 
-**分數：9/10**
+* 優點：
 
----
+  * `FormData`、`CampSearch`、`CampDistData[]`、`DistrictWeather[]` 型別清楚。
+  * `getWeatherByDistrictGrouped()` 返回型別 `GroupedWeather`，型別安全。
+* 改進建議：
 
-## **2️⃣ 型態安全性 (Type Safety)**
+  * 無重大問題，但可將空陣列 fallback 也保持 readonly 風格，保持型別一致性。
 
-**優點：**
+**3️⃣ UX / 使用者體驗 (8.5/10)**
 
-- `FormData` 明確型別化，避免 `any`。
-- `campDistData`、`locationWeather` 明確型別化。
-- `getWeatherByDistrictGrouped` 防護空陣列，回傳型別 `GroupedWeather`。
+* 優點：
 
-**建議：**
+  * `isLoading` 狀態處理完整，方便 template 顯示 loading UI。
+  * catchError 回傳 fallback Observable，避免程式中斷。
+* 改進建議：
 
-- `campSearch` 仍用 `!` 非空斷言，可考慮初始化或用 getter 計算，避免潛在 undefined。
-- 可針對 `campForm` 或其他表單資料再型別化，確保所有傳遞給服務的資料安全。
+  * `forkJoin` 若其中一個 Observable 發生錯誤就整個流程會進 error，可能導致部分資料沒載入。可改用 `combineLatest` + catchError 各自處理，以提升 UX。
 
-**分數：9/10**
+**4️⃣ 最佳實踐 (8/10)**
 
----
+* 優點：
 
-## **3️⃣ UX / 使用者體驗 (UX)**
+  * 使用 `forkJoin` 聚合多個 Observable，符合 reactive pattern。
+  * 對錯誤有統一 log 與 fallback。
+* 改進建議：
 
-**優點：**
+  * 若要符合完全 reactive + OnPush 的最佳實踐，建議：
 
-- `isLoading` 反映異步狀態，可綁 UI 顯示載入動畫。
-- 資料載入失敗時清空陣列，避免 UI 出錯。
-
-**建議：**
-
-- 可考慮額外 `errorMessage` 屬性，顯示給使用者明確錯誤提示。
-
-**分數：9/10**
+    * Component 使用 `ChangeDetectionStrategy.OnPush`
+    * 盡量用 async pipe 取代 subscribe
+    * 避免 component 直接操作 state，改用 RxJS stream 來驅動 UI。
 
 ---
 
-## **4️⃣ 最佳實踐 (Best Practices)**
+總結：
 
-**優點：**
+* 結構清楚、型別安全、loading 與錯誤處理合理。
+* 主要改進點：
 
-- `async/await` + `try/catch` 處理異步呼叫，邏輯清楚。
-- 使用 alias，避免長路徑 import。
-
-**建議：**
-
-- 不需要在 Component providers 裡再提供 `CampDataService`、`WeatherService`，已在 `providedIn: 'root'`，否則每個 component 會產生新實例。
-- `FormData` 可直接透過解構預設值初始化，讓 constructor 更乾淨。
-
-**分數：8.5/10**
-
----
-
-## **5️⃣ 總分**
-
-| 面向              | 分數   |
-| ----------------- | ------ |
-| 可讀性 / 可維護性 | 9/10   |
-| 型態安全性        | 9/10   |
-| UX / 使用者體驗   | 9/10   |
-| 最佳實踐          | 8.5/10 |
-
-**總平均：** 8.9 / 10
-
----
-
-### **總評**
-
-- 程式碼已經非常乾淨，型別安全且易讀。
-- 若要 10/10，可改進：
-  1. Component class 命名加 `Component` 後綴。
-  2. 移除 providers 中不必要的 Service。
-  3. Constructor 初始化可用解構 + default，更簡潔。
-  4. 若有 form 或 UI 表單操作，可再強化型別與錯誤提示。
+  1. **RxJS 完全 reactive**：使用 async pipe，避免內部 subscribe。
+  2. **OnPush change detection**：提升效能。
+  3. **錯誤處理策略優化**：避免單個 Observable error 導致全部失敗。
