@@ -49,11 +49,22 @@ export class Result implements OnInit {
   ) {
     const navData =
       this.router.getCurrentNavigation()?.extras.state?.['formData'];
+
+    // 防呆判斷
+    if (
+      !navData ||
+      typeof navData.campDate !== 'string' ||
+      typeof navData.city !== 'string'
+    ) {
+      console.warn('未收到有效的 formData，返回上一頁');
+      this.location.back();
+      return;
+    }
     this.formData = {
-      campDate: navData?.campDate ?? '',
-      city: navData?.city ?? '',
+      campDate: navData.campDate,
+      city: navData.city,
     };
-    this.campSearch = this.toCampSearch(this.formData);
+    this.campSearch = { ...this.formData };
   }
 
   ngOnInit(): void {
@@ -108,17 +119,8 @@ export class Result implements OnInit {
     this.location.back();
   }
 
-  private toCampSearch(data: FormData): CampSearch {
-    return {
-      campDate: data.campDate,
-      city: data.city,
-    };
-  }
-
   getWeatherByDistrictGrouped(districtName: string): GroupedWeather {
-    if (!this.locationWeather || this.locationWeather.length === 0) {
-      return {};
-    }
+    if (!this.locationWeather.length) return {};
     return this.weatherService.getWeatherByDistrictGrouped(
       this.locationWeather,
       districtName,
