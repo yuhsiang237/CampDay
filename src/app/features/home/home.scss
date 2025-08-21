@@ -4,41 +4,55 @@
   align-items: flex-start;
   min-height: 100vh;
   padding: 3rem 1rem;
-  background-color: #f8f8f8; // 淺灰背景
+  background-color: #f8f8f8;
   font-family: "Noto Sans", "Helvetica Neue", sans-serif;
 
   .camp-form-container {
-    background-color: #ffffff; // 白色卡片
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #ffffff;
     border-radius: 12px;
     padding: 2.5rem;
     max-width: 500px;
     width: 100%;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08); // 輕柔陰影
-    display: flex;
-    flex-direction: column;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
 
-    h2 {
-      font-size: 1.8rem;
-      font-weight: 700;
-      color: #1a1a1a; // 深色標題
-      text-align: center;
+    /* Logo 與標題左右排列 */
+    .logo-title {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem; /* Logo 與文字間距 */
       margin-bottom: 1.5rem;
+
+      .logo {
+        width: 100px;
+        height: auto;
+      }
+
+      h2 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin: 0;
+      }
     }
 
     .form-description {
       font-size: 0.95rem;
       line-height: 1.6;
       color: #333;
-      margin-bottom: 1.5rem;
+      margin-bottom: 0.5rem;
       background-color: #f2f2f2;
       padding: 1rem 1.2rem;
       border-radius: 8px;
     }
 
     .author-info {
+      align-self: flex-end; // 讓該區塊靠右
       font-size: 0.85rem;
       text-align: right;
-      margin-bottom: 2rem;
 
       a {
         color: #1a1a1a;
@@ -59,6 +73,7 @@
     .camp-form {
       display: flex;
       flex-direction: column;
+      width: 100%;
 
       .form-item {
         display: flex;
@@ -82,7 +97,7 @@
 
           &:focus {
             outline: none;
-            border-color: #0078d4; // 點擊時亮藍色
+            border-color: #0078d4;
             box-shadow: 0 0 0 3px rgba(0, 120, 212, 0.2);
           }
         }
@@ -97,7 +112,7 @@
       .submit-btn {
         padding: 0.75rem;
         border-radius: 12px;
-        background-color: #1a1a1a; // 黑色按鈕
+        background-color: #1a1a1a;
         color: #fff;
         font-weight: 600;
         font-size: 1rem;
@@ -106,7 +121,7 @@
         transition: all 0.3s ease;
 
         &:hover {
-          background-color: #333333; // hover 深灰
+          background-color: #333333;
           transform: translateY(-2px);
         }
 
