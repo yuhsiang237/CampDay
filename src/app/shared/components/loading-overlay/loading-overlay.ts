@@ -10,5 +10,5 @@ import { CommonModule } from '@angular/common';
 })
 export class LoadingOverlay {
   @Input() isLoading: boolean = false;
-  @Input() message: string = '載入中…';
+  @Input() message: string = 'Loading…';
 }

@@ -3,20 +3,22 @@ body,
 html {
   overflow-x: hidden;
   box-sizing: border-box;
+  background-color: #f9f9f9; // 淺灰背景
+  color: #1a1a1a; // 主要文字黑色
 }
 
 /* camp-list 容器 */
 .camp-list {
-  font-family: Arial, sans-serif;
+  font-family: "Noto Sans", Arial, sans-serif;
   margin: 20px;
 
   .district-title {
     font-size: 1.5rem;
     font-weight: bold;
     margin-bottom: 10px;
-    border-bottom: 2px solid #ccc;
+    border-bottom: 2px solid #e0e0e0; // 淺灰底線
     padding-bottom: 0.2rem;
-    color: #333;
+    color: #1a1a1a; // 深黑標題
   }
 
   @media (max-width: 600px) {
@@ -29,31 +31,35 @@ html {
   padding: 12px 0;
   border: none;
   border-radius: 6px;
-  background-color: #007bff;
-  color: #fff;
+  background-color: #0078d4; // 藍色點綴
+  color: #ffffff;
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s;
-}
 
-.go-btn:hover {
-  background-color: #0056b3;
+  &:hover {
+    background-color: #005ea6; // 深藍 hover
+  }
 }
 
 /* 連結按鈕 */
 a.btn-link {
   display: inline-block;
   padding: 0.2rem 0.5rem;
-  background-color: #1e88e5;
-  color: #fff;
+  background-color: #ffffff; // 白底
+  color: #1a1a1a; // 黑字
+  border: 1px solid #1a1a1a; // 黑框
   text-decoration: none;
   border-radius: 4px;
   font-size: 0.85rem;
+  transition: all 0.2s ease;
 
   &:hover {
-    background-color: #1565c0;
+    background-color: #1a1a1a; // hover 變黑
+    color: #ffffff; // 文字變白
   }
 }
+
 /* camp-weather.component.scss */
 
 /* table 樣式 */
@@ -72,7 +78,7 @@ table {
 
 th,
 td {
-  border: 1px solid #ccc;
+  border: 1px solid #e0e0e0; // 淺灰邊框
   padding: 8px 12px;
   text-align: left;
   vertical-align: middle;
@@ -82,24 +88,24 @@ td {
 }
 
 thead th {
-  background-color: #f0f0f0;
+  background-color: #f0f0f0; // 淺灰表頭
   font-weight: bold;
-  color: #555;
+  color: #555555; // 標題深灰
 }
 
 tbody tr:nth-child(even) {
-  background-color: #fafafa;
+  background-color: #fafafa; // 偶數行淺灰
 }
 
 tbody tr:hover {
-  background-color: #f0f8ff;
+  background-color: #f5f5f5; // hover
 }
 
 /* 標題樣式 */
 .camp-title {
   font-size: 1.2rem;
   margin: 15px 0 5px 0;
-  color: #555;
+  color: #1a1a1a; // 深黑文字
 }
 
 /* 手機版調整 */

@@ -6,8 +6,8 @@
   flex-wrap: nowrap;
   gap: 1rem;
   padding: 1rem;
-  background-color: #fdfdfd;
-  border: 1px solid #ddd;
+  background-color: #ffffff; /* 白色卡片 */
+  border: 1px solid #e0e0e0; /* 淺灰邊框 */
   border-radius: 6px;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
@@ -18,14 +18,14 @@
 
     .label {
       font-size: 0.8rem;
-      color: #666;
+      color: #555555; /* 深灰標籤 */
       margin-bottom: 0.2rem;
     }
 
     .value {
       font-size: 1rem;
       font-weight: 500;
-      color: #222;
+      color: #1a1a1a; /* 黑色值 */
       word-break: break-word;
     }
   }
@@ -36,44 +36,45 @@
   padding: 12px;
   border: none;
   border-radius: 6px;
-  background-color: #6c757d;
-  color: #fff;
+  background-color: #1a1a1a; /* 黑色按鈕 */
+  color: #ffffff;
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #333333; /* hover 深灰 */
+  }
 }
 
-.btn-back:hover {
-  background-color: #5a6268;
-}
-
+/* Go 按鈕 */
 .go-btn {
   padding: 12px 0;
   border: none;
   border-radius: 6px;
-  background-color: #007bff;
-  color: #fff;
+  background-color: #0078d4; /* 藍色點綴 */
+  color: #ffffff;
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s;
-}
 
-.go-btn:hover {
-  background-color: #0056b3;
+  &:hover {
+    background-color: #005ea6; /* 深藍 hover */
+  }
 }
 
 /* 連結按鈕 */
 a.btn-link {
   display: inline-block;
   padding: 0.2rem 0.5rem;
-  background-color: #1e88e5;
-  color: #fff;
+  background-color: #0078d4; /* 藍色點綴 */
+  color: #ffffff;
   text-decoration: none;
   border-radius: 4px;
   font-size: 0.85rem;
 
   &:hover {
-    background-color: #1565c0;
+    background-color: #005ea6; /* 深藍 hover */
   }
 }
 

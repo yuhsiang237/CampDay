@@ -10,7 +10,7 @@
   <tbody>
     <tr *ngFor="let i of [].constructor(getMaxSlots()); let idx = index">
       <td>
-        {{ idx === 0 ? "上午" : "下午" }}<br />
+        {{ idx === 0 ? "上午時段" : "下午時段" }}<br />
         {{ idx === 0 ? "(00:00 ~ 12:00)" : "(13:00 ~ 23:00)" }}
       </td>
       <td *ngFor="let kv of weatherGrouped | keyvalue">

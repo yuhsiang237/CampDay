@@ -12,38 +12,40 @@ table {
   border-collapse: collapse;
   table-layout: fixed;
   margin-bottom: 2rem;
+  background-color: #ffffff; // 白底
 }
 
 th,
 td {
-  border: 1px solid #ccc;
+  border: 1px solid #e0e0e0; // 淺灰邊框
   padding: 8px 12px;
   text-align: left;
   vertical-align: middle;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: #1a1a1a; // 黑色文字
 }
 
 thead th {
-  background-color: #f0f0f0;
+  background-color: #f5f5f5; // 淺灰表頭
   font-weight: bold;
-  color: #555;
+  color: #1a1a1a; // 黑色文字
 }
 
 tbody tr:nth-child(even) {
-  background-color: #fafafa;
+  background-color: #fafafa; // 偶數行淺灰
 }
 
 tbody tr:hover {
-  background-color: #f0f8ff;
+  background-color: #f5f5f5; // hover
 }
 
 /* 標題樣式 */
 .camp-title {
   font-size: 1.2rem;
   margin: 15px 0 5px 0;
-  color: #555;
+  color: #1a1a1a; // 深黑文字
 }
 
 /* 手機版調整 */
