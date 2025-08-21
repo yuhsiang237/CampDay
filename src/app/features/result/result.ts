@@ -14,7 +14,7 @@ import { CampSearchCard } from '@shared/components/camp-search-card/camp-search-
 import { CampWeatherComponent } from '@shared/components/camp-weather-component/camp-weather-component';
 import { CampListComponent } from '@shared/components/camp-list-component/camp-list-component';
 
-import { catchError, forkJoin, map, of, Observable } from 'rxjs';
+import { catchError, forkJoin, map, of, Observable, tap, finalize } from 'rxjs';
 
 interface FormData {
   campDate: string;
@@ -70,24 +70,30 @@ export class Result implements OnInit {
   ngOnInit(): void {
     this.loadAllData();
   }
-
   private loadAllData(): void {
     this.isLoading = true;
 
     forkJoin({
       weather: this.loadWeather$(),
       camps: this.loadCampSites$(),
-    }).subscribe({
-      next: ({ weather, camps }) => {
-        this.locationWeather = weather;
-        this.campDistData = camps;
-        this.isLoading = false;
-      },
-      error: (err) => {
-        console.error('載入資料失敗', err);
-        this.isLoading = false;
-      },
-    });
+    })
+      .pipe(
+        tap(({ weather, camps }) => {
+          // ✅ 負責 UI 資料更新
+          this.locationWeather = weather;
+          this.campDistData = camps;
+        }),
+        catchError((err) => {
+          console.error('載入資料失敗', err);
+          // ✅ 回傳安全值，避免整個流崩潰
+          return of({ weather: [], camps: [] });
+        }),
+        finalize(() => {
+          // ✅ 無論成功或失敗，一定執行
+          this.isLoading = false;
+        }),
+      )
+      .subscribe();
   }
 
   /** 載入天氣資料 Observable */
