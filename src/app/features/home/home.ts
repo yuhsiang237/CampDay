@@ -57,7 +57,7 @@ export class Home implements OnInit {
   /** 建立表單 */
   private initForm(): void {
     this.campForm = this.fb.group({
-      campDate: new FormControl('', {
+      campDate: new FormControl(new Date().toISOString().split('T')[0], {
         nonNullable: true,
         validators: [Validators.required, max7DaysValidator],
       }),
