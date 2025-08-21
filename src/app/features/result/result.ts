@@ -76,17 +76,19 @@ export class Result implements OnInit {
     forkJoin({
       weather: this.loadWeather$(),
       camps: this.loadCampSites$(),
+      campCount: this.getTotalCampCount$(),
     })
       .pipe(
-        tap(({ weather, camps }) => {
+        tap(({ weather, camps, campCount }) => {
           // ✅ 負責 UI 資料更新
           this.locationWeather = weather;
           this.campDistData = camps;
+          this.campSearch.allCampCount = campCount;
         }),
         catchError((err) => {
           console.error('載入資料失敗', err);
           // ✅ 回傳安全值，避免整個流崩潰
-          return of({ weather: [], camps: [] });
+          return of({ weather: [], camps: [], campCount: 0 });
         }),
         finalize(() => {
           // ✅ 無論成功或失敗，一定執行
@@ -102,6 +104,20 @@ export class Result implements OnInit {
       catchError((err) => {
         console.error('載入天氣資料失敗', err);
         return of([] as DistrictWeather[]);
+      }),
+    );
+  }
+
+  private getTotalCampCount$(): Observable<number> {
+    return this.campDataService.getCampSites().pipe(
+      map(
+        (campSites) =>
+          this.campDataService.filterByCity(campSites, this.campSearch.city)
+            .length,
+      ),
+      catchError((err) => {
+        console.error('載入營地資料失敗', err);
+        return of(0);
       }),
     );
   }
